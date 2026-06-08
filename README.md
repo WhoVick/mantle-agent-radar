@@ -43,3 +43,7 @@ python -m agent_radar.build_signals
 npm run check
 npm run hash:top
 ```
+
+## Public Demo
+
+Root `index.html` redirects to `web/index.html`, so GitHub Pages can serve the dashboard from the repository root.
