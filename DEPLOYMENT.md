@@ -4,6 +4,10 @@
 
 The dashboard is static and deploys from `web/`.
 
+Current GitHub Pages demo:
+
+- https://whovick.github.io/mantle-agent-radar/
+
 ### Vercel
 
 1. Import the GitHub repository.
@@ -56,4 +60,3 @@ python tools/hash_signal.py --top
 8. Add the Mantlescan URL to DoraHacks.
 
 Note: `tools/hash_signal.py` uses stdlib SHA3-256 for deterministic MVP commitments. For exact Ethereum Keccak-256, compute with Foundry or ethers before the final mainnet transaction.
-

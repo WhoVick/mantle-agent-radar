@@ -44,10 +44,13 @@ High-confidence signals can be committed to Mantle through a lightweight `Signal
 
 ## Demo
 
-Open `web/index.html` and show:
+Live demo: https://whovick.github.io/mantle-agent-radar/
+
+GitHub: https://github.com/WhoVick/mantle-agent-radar
+
+Show:
 
 1. Ranked signal feed.
 2. Top signal detail with evidence and scoring.
 3. Filtered competitor/risk/deployment signals.
 4. `contracts/SignalRegistry.sol` for on-chain proof.
-
