@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mantle Agent Radar</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <aside class="rail">
+        <div class="brand">
+          <div class="mark">MR</div>
+          <div>
+            <h1>Mantle Agent Radar</h1>
+            <p>Track 02 / AI Alpha & Data</p>
+          </div>
+        </div>
+
+        <section class="score-block">
+          <span class="label">Prize Target</span>
+          <strong>$18K+</strong>
+          <p>Track first + deployment + community upside.</p>
+        </section>
+
+        <nav class="filters" aria-label="Signal filters">
+          <button class="filter active" data-filter="all">All</button>
+          <button class="filter" data-filter="alpha">Alpha</button>
+          <button class="filter" data-filter="risk">Risk</button>
+          <button class="filter" data-filter="ecosystem">Ecosystem</button>
+          <button class="filter" data-filter="competitor">Competitor</button>
+          <button class="filter" data-filter="deadline">Deadline</button>
+        </nav>
+      </aside>
+
+      <section class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Live intelligence MVP</p>
+            <h2>Investor-grade Mantle signals</h2>
+          </div>
+          <div class="top-actions">
+            <button id="copyTopSignal" class="icon-button" title="Copy top signal summary">Copy</button>
+            <a class="link-button" href="../research/winning_strategy.md">Strategy</a>
+          </div>
+        </header>
+
+        <section class="metrics" aria-label="Signal metrics">
+          <div class="metric">
+            <span>Signals</span>
+            <strong id="metricSignals">0</strong>
+          </div>
+          <div class="metric">
+            <span>Avg confidence</span>
+            <strong id="metricConfidence">0</strong>
+          </div>
+          <div class="metric">
+            <span>Sources</span>
+            <strong id="metricSources">0</strong>
+          </div>
+          <div class="metric accent">
+            <span>On-chain proof</span>
+            <strong>Ready</strong>
+          </div>
+        </section>
+
+        <section class="board">
+          <div class="signal-list" id="signalList" aria-label="Ranked signal list"></div>
+
+          <article class="detail" id="signalDetail">
+            <div class="empty-state">
+              <h3>Select a signal</h3>
+              <p>The agent will show evidence, score rationale, and the recommended investor action.</p>
+            </div>
+          </article>
+        </section>
+      </section>
+    </main>
+
+    <script src="data/signals.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
+

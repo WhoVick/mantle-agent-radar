@@ -1,0 +1,12 @@
+{
+  "name": "mantle-agent-radar",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI Alpha & Data agent for Mantle investor-grade signals.",
+  "scripts": {
+    "build": "python -m agent_radar.build_signals",
+    "check": "python -B -c \"import agent_radar.models, agent_radar.scoring, agent_radar.build_signals\" && node --check web/app.js",
+    "preview": "python -m http.server 8899 --bind 127.0.0.1 --directory web",
+    "hash:top": "python tools/hash_signal.py --top"
+  }
+}

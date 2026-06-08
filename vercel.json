@@ -1,0 +1,6 @@
+{
+  "buildCommand": "python -m agent_radar.build_signals",
+  "outputDirectory": "web",
+  "installCommand": ""
+}
+

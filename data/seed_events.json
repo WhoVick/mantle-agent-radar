@@ -1,0 +1,105 @@
+{
+  "events": [
+    {
+      "id": "devhub-prize-2026-06-08",
+      "source": "Mantle DevHub",
+      "source_type": "devhub",
+      "title": "Prize map shows four parallel money paths",
+      "text": "Phase II offers 6 x $8,500 track first prizes, $9,000 Grand Champion, 2 x $8,500 Community Voting, $3,000 UI/UX, and 20 x $1,000 Finalist & Deployment awards. Total value is $223K+ including API credits.",
+      "url": "https://devhub.mantle.xyz/",
+      "observed_at": "2026-06-08T08:30:00Z",
+      "tags": ["deadline", "prize", "community", "deployment", "jun 15"]
+    },
+    {
+      "id": "criteria-alpha-data-2026-06-08",
+      "source": "Judging Criteria Sheet",
+      "source_type": "criteria",
+      "title": "Alpha & Data scoring rewards investor-grade insights",
+      "text": "Mirana judges score Insight value 15, Data source quality 15, Investment utility 12, and Scalability & sustainability 8. Excellent means verifiable alpha or institutional-grade insights with robust data pipelines.",
+      "url": "https://docs.google.com/spreadsheets/d/1TMWhQ8cKp_1NF1ZelxtBGIF6l3bQZTA0ipjSREiqRhM/edit?gid=0#gid=0",
+      "observed_at": "2026-06-08T08:35:00Z",
+      "tags": ["criteria", "alpha", "investment", "mirana", "verifiable"]
+    },
+    {
+      "id": "telegram-mainnet-preferred-2026-05-18",
+      "source": "Telegram / SuperStella",
+      "source_type": "telegram",
+      "title": "Mainnet deployment is preferred for final winners",
+      "text": "Organizer answer: testnet deployment counts, but mainnet deployment is considered better for final winner selection.",
+      "url": "https://t.me/MantleTuringTestHackathon",
+      "observed_at": "2026-05-18T11:01:32Z",
+      "tags": ["mainnet", "deployment", "mantle", "winner"]
+    },
+    {
+      "id": "mantle-erc8004-registry-2026-06-02",
+      "source": "Telegram / Byreal Ops",
+      "source_type": "mantlescan",
+      "title": "Mantle ERC-8004 Identity Registry is live on mainnet",
+      "text": "Byreal Ops shared Mantle registry address 0x8004A169FB4a3325136EB29fA0ceB6D2e539a432 as the identity registry for agent ID / ERC-8004 related work.",
+      "url": "https://mantlescan.xyz/address/0x8004A169FB4a3325136EB29fA0ceB6D2e539a432",
+      "observed_at": "2026-06-02T07:05:00Z",
+      "tags": ["mantle", "mainnet", "erc8004", "registry", "verifiable"]
+    },
+    {
+      "id": "competitor-argus-2026-06-06",
+      "source": "Telegram / Madhav",
+      "source_type": "telegram",
+      "title": "Argus positions around xStock depeg rescue",
+      "text": "Competitor is building a non-custodial AI agent for tokenized stocks on Mantle, monitoring depeg risk using Pyth vs Fluxion and executing a rescue based on a pre-signed policy.",
+      "url": "https://t.me/MantleTuringTestHackathon",
+      "observed_at": "2026-06-06T14:18:00Z",
+      "tags": ["competitor", "rwa", "risk", "depeg", "xstocks"]
+    },
+    {
+      "id": "competitor-strata-2026-05-17",
+      "source": "Telegram / Anish",
+      "source_type": "x",
+      "title": "Strata crowds RWA yield with multi-agent protocol",
+      "text": "Strata is a tranched real-world-asset yield protocol on Mantle managed by five autonomous agents with on-chain identity, verifiable decisions, and agent-to-agent communication.",
+      "url": "https://x.com/strataagent/status/2056035312326033707?s=20",
+      "observed_at": "2026-05-17T18:46:17Z",
+      "tags": ["competitor", "rwa", "yield", "agent", "identity"]
+    },
+    {
+      "id": "competitor-ledgerforge-2026-06-06",
+      "source": "Telegram / Poulav",
+      "source_type": "x",
+      "title": "LedgerForge crowds agent reputation marketplace",
+      "text": "LedgerForge lets agents with verified on-chain reputation apply to jobs autonomously and earn when work is completed. Live on Mantle mainnet.",
+      "url": "https://ledgerforge-self.vercel.app/",
+      "observed_at": "2026-06-06T14:26:00Z",
+      "tags": ["competitor", "agent", "reputation", "mainnet", "marketplace"]
+    },
+    {
+      "id": "competitor-tenki-2026-06-06",
+      "source": "Telegram / Venkat Sunny",
+      "source_type": "x",
+      "title": "Tenki crowds natural-language backtesting",
+      "text": "Tenki is an autonomous AI quant agent that turns natural-language strategies into backtests and anchors every result on-chain.",
+      "url": "https://x.com/i/status/2063316350098166118",
+      "observed_at": "2026-06-06T20:46:00Z",
+      "tags": ["competitor", "trading", "backtesting", "verifiable"]
+    },
+    {
+      "id": "telegram-realclaw-track6-2026-05-18",
+      "source": "Telegram / SuperStella",
+      "source_type": "telegram",
+      "title": "RealClaw is only required for Track 6",
+      "text": "Organizer answer: projects outside Track 6 have no relation with Byreal RealClaw. Track 6 must use either Byreal Agent Skill or RealClaw.",
+      "url": "https://t.me/MantleTuringTestHackathon",
+      "observed_at": "2026-05-18T11:05:19Z",
+      "tags": ["scope", "track6", "realclaw"]
+    },
+    {
+      "id": "deployment-awards-delayed-2026-05-20",
+      "source": "Telegram / SuperStella",
+      "source_type": "telegram",
+      "title": "20 deployment awards details were delayed",
+      "text": "Organizer answer: deployment award status was delayed because judging criteria had just been finalized. This makes deployment readiness a useful edge.",
+      "url": "https://t.me/MantleTuringTestHackathon",
+      "observed_at": "2026-05-20T21:11:00Z",
+      "tags": ["deployment", "prize", "delayed", "criteria"]
+    }
+  ]
+}
+

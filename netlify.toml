@@ -1,0 +1,4 @@
+[build]
+command = "python -m agent_radar.build_signals"
+publish = "web"
+
