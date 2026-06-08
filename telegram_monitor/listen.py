@@ -5,6 +5,7 @@ import os
 from datetime import timezone
 from pathlib import Path
 from typing import Any
+from urllib.parse import unquote, urlparse
 
 from dotenv import load_dotenv
 from telethon import TelegramClient, events
@@ -20,6 +21,35 @@ def env(name: str, default: str | None = None) -> str:
 def parse_chats(raw: str) -> list[str]:
     chats = [item.strip() for item in raw.split(",")]
     return [item for item in chats if item]
+
+
+def parse_proxy(raw: str | None) -> tuple[Any, str, int, bool, str | None, str | None] | None:
+    if raw is None or raw.strip() == "":
+        return None
+
+    parsed = urlparse(raw.strip())
+    if parsed.scheme == "" or parsed.hostname is None or parsed.port is None:
+        raise SystemExit("TELEGRAM_PROXY must look like socks5://user:pass@host:port")
+
+    try:
+        import socks
+    except ImportError as exc:
+        raise SystemExit("Install PySocks to use TELEGRAM_PROXY: python -m pip install PySocks") from exc
+
+    scheme = parsed.scheme.lower()
+    proxy_types = {
+        "socks4": socks.SOCKS4,
+        "socks5": socks.SOCKS5,
+        "socks5h": socks.SOCKS5,
+        "http": socks.HTTP,
+        "https": socks.HTTP,
+    }
+    if scheme not in proxy_types:
+        raise SystemExit("TELEGRAM_PROXY scheme must be socks4, socks5, socks5h, http, or https")
+
+    username = unquote(parsed.username) if parsed.username else None
+    password = unquote(parsed.password) if parsed.password else None
+    return (proxy_types[scheme], parsed.hostname, parsed.port, scheme == "socks5h", username, password)
 
 
 def iso_date(value: Any) -> str | None:
@@ -77,11 +107,12 @@ async def main() -> None:
     chats = parse_chats(env("TG_CHATS"))
     session = env("TG_SESSION", "sessions/mantle_hackathon")
     output = Path(env("TG_OUTPUT", "data/telegram_messages.jsonl"))
+    proxy = parse_proxy(os.getenv("TELEGRAM_PROXY"))
 
     Path(session).parent.mkdir(parents=True, exist_ok=True)
     output.parent.mkdir(parents=True, exist_ok=True)
 
-    client = TelegramClient(session, api_id, api_hash)
+    client = TelegramClient(session, api_id, api_hash, proxy=proxy)
     await client.start(phone=phone)
 
     entities = [await client.get_entity(chat_ref) for chat_ref in chats]
@@ -101,4 +132,3 @@ async def main() -> None:
 
 if __name__ == "__main__":
     asyncio.run(main())
-

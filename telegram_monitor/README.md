@@ -7,6 +7,12 @@ Read-only Telegram monitor for Mantle hackathon intelligence.
 1. Create a Telegram app at https://my.telegram.org/apps.
 2. Copy `.env.example` to `.env`.
 3. Fill `TG_API_ID`, `TG_API_HASH`, `TG_PHONE`, `TG_CHATS`.
+   If Telegram must use a proxy, set `TELEGRAM_PROXY` in URL form:
+
+```dotenv
+TELEGRAM_PROXY=socks5://user:password@host:port
+```
+
    Or run:
 
 ```powershell
