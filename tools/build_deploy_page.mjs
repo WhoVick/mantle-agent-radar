@@ -1,0 +1,316 @@
+import crypto from "node:crypto";
+import fs from "node:fs";
+import path from "node:path";
+import solc from "solc";
+
+const root = path.resolve(import.meta.dirname, "..");
+const contractPath = path.join(root, "contracts", "SignalRegistry.sol");
+const signalsPath = path.join(root, "web", "data", "signals.json");
+const artifactPath = path.join(root, "web", "data", "deploy-artifact.json");
+const deployPagePath = path.join(root, "web", "deploy.html");
+
+const source = fs.readFileSync(contractPath, "utf8");
+const input = {
+  language: "Solidity",
+  sources: {
+    "SignalRegistry.sol": {
+      content: source,
+    },
+  },
+  settings: {
+    optimizer: {
+      enabled: true,
+      runs: 200,
+    },
+    outputSelection: {
+      "*": {
+        "*": ["abi", "evm.bytecode.object"],
+      },
+    },
+  },
+};
+
+const output = JSON.parse(solc.compile(JSON.stringify(input)));
+const errors = (output.errors || []).filter((item) => item.severity === "error");
+if (errors.length > 0) {
+  throw new Error(errors.map((item) => item.formattedMessage).join("\n"));
+}
+
+const compiled = output.contracts["SignalRegistry.sol"].SignalRegistry;
+const signals = JSON.parse(fs.readFileSync(signalsPath, "utf8"));
+const topSignal = signals.signals[0];
+const canonicalSignal = {
+  id: topSignal.id,
+  signal_type: topSignal.signal_type,
+  title: topSignal.title,
+  summary: topSignal.summary,
+  confidence: topSignal.confidence,
+  evidence: topSignal.evidence,
+};
+
+function stableStringify(value) {
+  if (Array.isArray(value)) {
+    return `[${value.map((item) => stableStringify(item)).join(",")}]`;
+  }
+  if (value && typeof value === "object") {
+    return `{${Object.keys(value)
+      .sort()
+      .map((key) => `${JSON.stringify(key)}:${stableStringify(value[key])}`)
+      .join(",")}}`;
+  }
+  return JSON.stringify(value);
+}
+
+const stablePayload = stableStringify(canonicalSignal);
+
+const signalHash = `0x${crypto.createHash("sha3-256").update(stablePayload).digest("hex")}`;
+const agentId = `0x${crypto.createHash("sha3-256").update("Mantle Agent Radar v0.1").digest("hex")}`;
+
+const artifact = {
+  contractName: "SignalRegistry",
+  mantle: {
+    chainId: "0x1388",
+    chainIdDecimal: 5000,
+    chainName: "Mantle",
+    rpcUrl: "https://rpc.mantle.xyz",
+    explorerUrl: "https://mantlescan.xyz",
+    nativeCurrency: {
+      name: "Mantle",
+      symbol: "MNT",
+      decimals: 18,
+    },
+  },
+  abi: compiled.abi,
+  bytecode: `0x${compiled.evm.bytecode.object}`,
+  topSignal: {
+    signalId: topSignal.id,
+    title: topSignal.title,
+    signalHash,
+    agentId,
+    signalType: topSignal.signal_type,
+    confidence: topSignal.confidence,
+  },
+};
+
+fs.mkdirSync(path.dirname(artifactPath), { recursive: true });
+fs.writeFileSync(artifactPath, `${JSON.stringify(artifact, null, 2)}\n`, "utf8");
+
+const html = String.raw`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mantle Agent Radar / Deploy Proof</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+      body { min-height: 100vh; }
+      .deploy-shell { width: min(1120px, calc(100vw - 32px)); margin: 0 auto; padding: 36px 0; }
+      .deploy-header { display: flex; justify-content: space-between; gap: 24px; align-items: flex-start; margin-bottom: 22px; }
+      .deploy-header h1 { margin: 0; font-size: 42px; line-height: 1.05; }
+      .deploy-header p { margin: 10px 0 0; color: var(--muted); max-width: 720px; }
+      .deploy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+      .deploy-panel { border: 1px solid var(--line); background: var(--panel); border-radius: 8px; padding: 22px; }
+      .deploy-panel h2 { margin: 0 0 12px; font-size: 20px; }
+      .deploy-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+      .primary-action, .secondary-action {
+        border: 1px solid var(--mint); color: var(--ink); background: var(--mint-soft);
+        border-radius: 8px; padding: 12px 14px; cursor: pointer; font-weight: 800;
+      }
+      .secondary-action { background: transparent; color: var(--mint); }
+      .primary-action:disabled, .secondary-action:disabled { opacity: .45; cursor: not-allowed; }
+      .kv { display: grid; grid-template-columns: 120px 1fr; gap: 8px 12px; margin: 14px 0; font-size: 14px; }
+      .kv span { color: var(--muted); }
+      .mono { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; overflow-wrap: anywhere; }
+      .status-log { min-height: 180px; max-height: 320px; overflow: auto; background: #07130f; border: 1px solid var(--line); border-radius: 8px; padding: 14px; color: var(--muted); }
+      .status-log p { margin: 0 0 10px; }
+      .ok { color: var(--mint); }
+      .warn { color: var(--orange); }
+      @media (max-width: 860px) {
+        .deploy-header { display: block; }
+        .deploy-grid { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="deploy-shell">
+      <header class="deploy-header">
+        <div>
+          <p class="eyebrow">Mantle mainnet proof</p>
+          <h1>Deploy SignalRegistry</h1>
+          <p>Connect Rabby, deploy the proof contract on Mantle, then commit the current top signal hash. No private key is entered on this page.</p>
+        </div>
+        <a class="link-button" href="index.html">Dashboard</a>
+      </header>
+
+      <section class="deploy-grid">
+        <article class="deploy-panel">
+          <h2>1. Wallet</h2>
+          <p>Use Rabby on Mantle mainnet. The page can request the correct network if needed.</p>
+          <div class="kv">
+            <span>Network</span><strong>Mantle / chain 5000</strong>
+            <span>RPC</span><strong class="mono">https://rpc.mantle.xyz</strong>
+            <span>Wallet</span><strong id="walletStatus">Not connected</strong>
+          </div>
+          <div class="deploy-actions">
+            <button class="primary-action" id="connectWallet">Connect Rabby</button>
+            <button class="secondary-action" id="switchNetwork">Switch to Mantle</button>
+          </div>
+        </article>
+
+        <article class="deploy-panel">
+          <h2>2. Top Signal</h2>
+          <div class="kv">
+            <span>Title</span><strong id="signalTitle">Loading...</strong>
+            <span>Type</span><strong id="signalType">-</strong>
+            <span>Confidence</span><strong id="confidence">-</strong>
+            <span>Signal hash</span><strong class="mono" id="signalHash">-</strong>
+            <span>Agent id</span><strong class="mono" id="agentId">-</strong>
+          </div>
+        </article>
+
+        <article class="deploy-panel">
+          <h2>3. Deploy Contract</h2>
+          <p>Rabby will show the gas and ask for confirmation. Confirm only if it says Mantle.</p>
+          <div class="kv">
+            <span>Contract</span><strong>SignalRegistry</strong>
+            <span>Address</span><strong class="mono" id="contractAddress">Not deployed</strong>
+          </div>
+          <div class="deploy-actions">
+            <button class="primary-action" id="deployContract" disabled>Deploy</button>
+            <a class="secondary-action" id="contractExplorer" href="#" target="_blank" rel="noreferrer" style="display:none">Open Mantlescan</a>
+          </div>
+        </article>
+
+        <article class="deploy-panel">
+          <h2>4. Commit Signal</h2>
+          <p>After deployment, commit the top signal hash. This creates the proof transaction for DoraHacks.</p>
+          <div class="kv">
+            <span>Tx hash</span><strong class="mono" id="commitTx">Not committed</strong>
+          </div>
+          <div class="deploy-actions">
+            <button class="primary-action" id="commitSignal" disabled>Commit Signal</button>
+            <a class="secondary-action" id="txExplorer" href="#" target="_blank" rel="noreferrer" style="display:none">Open Tx</a>
+          </div>
+        </article>
+      </section>
+
+      <section class="deploy-panel" style="margin-top:18px">
+        <h2>Status</h2>
+        <div class="status-log" id="log"></div>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/ethers@6.16.0/dist/ethers.umd.min.js"></script>
+    <script>
+      const logEl = document.getElementById("log");
+      const state = { artifact: null, provider: null, signer: null, account: null, contractAddress: null };
+
+      function log(message, cls = "") {
+        const item = document.createElement("p");
+        item.className = cls;
+        item.textContent = message;
+        logEl.prepend(item);
+      }
+
+      async function loadArtifact() {
+        const response = await fetch("data/deploy-artifact.json");
+        state.artifact = await response.json();
+        document.getElementById("signalTitle").textContent = state.artifact.topSignal.title;
+        document.getElementById("signalType").textContent = state.artifact.topSignal.signalType;
+        document.getElementById("confidence").textContent = String(state.artifact.topSignal.confidence);
+        document.getElementById("signalHash").textContent = state.artifact.topSignal.signalHash;
+        document.getElementById("agentId").textContent = state.artifact.topSignal.agentId;
+        log("Loaded deploy artifact.", "ok");
+      }
+
+      async function ensureWallet() {
+        if (!window.ethereum) {
+          throw new Error("No injected wallet found. Open this page in a browser with Rabby enabled.");
+        }
+        state.provider = new ethers.BrowserProvider(window.ethereum);
+        const accounts = await state.provider.send("eth_requestAccounts", []);
+        state.account = accounts[0];
+        state.signer = await state.provider.getSigner();
+        document.getElementById("walletStatus").textContent = state.account;
+        document.getElementById("deployContract").disabled = false;
+        log("Connected wallet " + state.account, "ok");
+      }
+
+      async function switchToMantle() {
+        const mantle = state.artifact.mantle;
+        try {
+          await window.ethereum.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: mantle.chainId }],
+          });
+        } catch (error) {
+          if (error.code !== 4902) throw error;
+          await window.ethereum.request({
+            method: "wallet_addEthereumChain",
+            params: [{
+              chainId: mantle.chainId,
+              chainName: mantle.chainName,
+              nativeCurrency: mantle.nativeCurrency,
+              rpcUrls: [mantle.rpcUrl],
+              blockExplorerUrls: [mantle.explorerUrl],
+            }],
+          });
+        }
+        log("Wallet is on Mantle.", "ok");
+      }
+
+      async function requireMantle() {
+        const network = await state.provider.getNetwork();
+        if (Number(network.chainId) !== state.artifact.mantle.chainIdDecimal) {
+          throw new Error("Wrong network: " + network.chainId + ". Switch to Mantle chain 5000 first.");
+        }
+      }
+
+      async function deployContract() {
+        await requireMantle();
+        const factory = new ethers.ContractFactory(state.artifact.abi, state.artifact.bytecode, state.signer);
+        log("Sending deploy transaction. Confirm in Rabby...");
+        const contract = await factory.deploy();
+        state.contractAddress = await contract.getAddress();
+        document.getElementById("contractAddress").textContent = state.contractAddress;
+        log("Deploy tx sent. Contract address: " + state.contractAddress);
+        await contract.waitForDeployment();
+        const url = state.artifact.mantle.explorerUrl + "/address/" + state.contractAddress;
+        const link = document.getElementById("contractExplorer");
+        link.href = url;
+        link.style.display = "inline-flex";
+        document.getElementById("commitSignal").disabled = false;
+        log("SignalRegistry deployed on Mantle.", "ok");
+      }
+
+      async function commitSignal() {
+        await requireMantle();
+        if (!state.contractAddress) throw new Error("Deploy the contract first.");
+        const contract = new ethers.Contract(state.contractAddress, state.artifact.abi, state.signer);
+        const top = state.artifact.topSignal;
+        log("Sending commitSignal transaction. Confirm in Rabby...");
+        const tx = await contract.commitSignal(top.signalHash, top.agentId, top.signalType, top.confidence);
+        document.getElementById("commitTx").textContent = tx.hash;
+        const url = state.artifact.mantle.explorerUrl + "/tx/" + tx.hash;
+        const link = document.getElementById("txExplorer");
+        link.href = url;
+        link.style.display = "inline-flex";
+        log("commitSignal tx sent: " + tx.hash);
+        await tx.wait();
+        log("Signal hash committed. Add the Mantlescan links to DoraHacks.", "ok");
+      }
+
+      document.getElementById("connectWallet").addEventListener("click", () => ensureWallet().catch((e) => log(e.message, "warn")));
+      document.getElementById("switchNetwork").addEventListener("click", () => switchToMantle().catch((e) => log(e.message, "warn")));
+      document.getElementById("deployContract").addEventListener("click", () => deployContract().catch((e) => log(e.message, "warn")));
+      document.getElementById("commitSignal").addEventListener("click", () => commitSignal().catch((e) => log(e.message, "warn")));
+
+      loadArtifact().catch((e) => log(e.message, "warn"));
+    </script>
+  </body>
+</html>
+`;
+
+fs.writeFileSync(deployPagePath, html, "utf8");
+console.log(`Wrote ${artifactPath}`);
+console.log(`Wrote ${deployPagePath}`);

@@ -7,6 +7,7 @@ The dashboard is static and deploys from `web/`.
 Current GitHub Pages demo:
 
 - https://whovick.github.io/mantle-agent-radar/
+- Proof deployer: https://whovick.github.io/mantle-agent-radar/deploy.html
 
 ### Vercel
 
@@ -45,18 +46,17 @@ Contract:
 
 Fast deployment:
 
-1. Open Remix.
-2. Paste `contracts/SignalRegistry.sol`.
-3. Compile with Solidity `0.8.24`.
-4. Connect wallet on Mantle mainnet.
-5. Deploy.
+1. Open `web/deploy.html` or the public proof deployer URL.
+2. Connect Rabby or another injected wallet.
+3. Switch to Mantle mainnet.
+4. Click `Deploy`.
+5. Click `Commit Signal`.
 6. Generate a signal hash:
 
 ```powershell
 python tools/hash_signal.py --top
 ```
 
-7. Call `commitSignal(signalHash, agentId, signalType, confidence)`.
-8. Add the Mantlescan URL to DoraHacks.
+7. Add the Mantlescan contract and transaction URLs to DoraHacks.
 
 Note: `tools/hash_signal.py` uses stdlib SHA3-256 for deterministic MVP commitments. For exact Ethereum Keccak-256, compute with Foundry or ethers before the final mainnet transaction.
