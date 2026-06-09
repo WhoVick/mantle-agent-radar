@@ -236,6 +236,16 @@ const html = String.raw`<!doctype html>
         log("Connected wallet " + state.account, "ok");
       }
 
+      async function refreshProvider() {
+        if (!window.ethereum) {
+          throw new Error("No injected wallet found. Open this page in a browser with Rabby enabled.");
+        }
+        state.provider = new ethers.BrowserProvider(window.ethereum);
+        state.signer = await state.provider.getSigner();
+        state.account = await state.signer.getAddress();
+        document.getElementById("walletStatus").textContent = state.account;
+      }
+
       async function switchToMantle() {
         const mantle = state.artifact.mantle;
         try {
@@ -256,10 +266,12 @@ const html = String.raw`<!doctype html>
             }],
           });
         }
+        await refreshProvider();
         log("Wallet is on Mantle.", "ok");
       }
 
       async function requireMantle() {
+        await refreshProvider();
         const network = await state.provider.getNetwork();
         if (Number(network.chainId) !== state.artifact.mantle.chainIdDecimal) {
           throw new Error("Wrong network: " + network.chainId + ". Switch to Mantle chain 5000 first.");
