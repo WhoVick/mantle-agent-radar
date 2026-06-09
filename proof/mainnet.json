@@ -1,0 +1,14 @@
+{
+  "network": "Mantle Mainnet",
+  "chain_id": 5000,
+  "contract_name": "SignalRegistry",
+  "contract_address": "0x5A3C88E1DfE4377448337f3795Ddb7C46A2F3088",
+  "contract_url": "https://mantlescan.xyz/address/0x5A3C88E1DfE4377448337f3795Ddb7C46A2F3088",
+  "commit_tx_hash": "0x505a05c21390d91993d8bce153d927629db4e05e96bca8260ac2a743ea478ad9",
+  "commit_tx_url": "https://mantlescan.xyz/tx/0x505a05c21390d91993d8bce153d927629db4e05e96bca8260ac2a743ea478ad9",
+  "signal_id": "324e50984ca62f45",
+  "signal_type": "deadline",
+  "confidence": 75,
+  "signal_hash": "0xa9f5171c0fe010f1f4a09c375b7690972d8f1c3038c01b363b51a6d3291731fe",
+  "agent_id": "0xa01ff137ec71f15114acd88a208f392ecb6f6ffb728043d75d3ecf51ad8c1d8f"
+}

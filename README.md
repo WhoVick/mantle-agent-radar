@@ -37,6 +37,7 @@ Judging fit:
 - `data/seed_events.json` - current source-event dataset.
 - `web/` - static dashboard.
 - `contracts/SignalRegistry.sol` - minimal Mantle proof contract.
+- `proof/` - Mantle mainnet proof links and committed signal metadata.
 - `tools/hash_signal.py` - deterministic signal hash helper.
 - `telegram_monitor/` - read-only Telethon monitor for hackathon chat intelligence.
 - `research/` - hackathon brief, opportunity map, Telegram intel, and strategy.
@@ -70,10 +71,9 @@ Do not commit `.env`, session files, phone numbers, API hashes, proxy credential
 
 ## Mainnet Proof
 
-The intended final demo flow:
+Mantle Agent Radar has a live proof contract on Mantle mainnet:
 
-1. Generate or select a top signal.
-2. Hash it with `tools/hash_signal.py`.
-3. Deploy `contracts/SignalRegistry.sol` on Mantle mainnet.
-4. Commit the signal hash, agent id, signal type, and confidence.
-5. Add the Mantlescan transaction or contract URL to the DoraHacks submission.
+- Contract: https://mantlescan.xyz/address/0x5A3C88E1DfE4377448337f3795Ddb7C46A2F3088
+- First signal commitment: https://mantlescan.xyz/tx/0x505a05c21390d91993d8bce153d927629db4e05e96bca8260ac2a743ea478ad9
+
+The committed signal metadata is stored in `proof/mainnet.json`.
