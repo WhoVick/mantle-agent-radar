@@ -222,7 +222,7 @@
 
       .app {
         display: grid;
-        grid-template-rows: auto auto minmax(0, 1fr);
+        grid-template-rows: auto auto 42px minmax(0, 1fr);
       }
 
       .metrics {
@@ -252,7 +252,10 @@
       .filters {
         display: flex;
         gap: 8px;
+        align-items: center;
         padding: 0 10px 10px;
+        position: relative;
+        z-index: 2;
       }
 
       .filter {
@@ -843,7 +846,7 @@
     </main>
 
     <script>
-      const duration = 74;
+      const duration = 86;
       const fixedTime = new URLSearchParams(window.location.search).get("t");
       const startedAt = Date.now();
 
@@ -851,30 +854,31 @@
         {
           at: 0,
           step: "Step 1",
-          title: "Start from scattered Mantle context",
-          text: "Radar watches hackathon pages, Telegram replies, criteria sheets and on-chain references.",
+          title: "Start with scattered context",
+          text: "Mantle alpha rarely starts as a clean dashboard. It appears in hackathon rules, Telegram replies, judging criteria, and on-chain receipts.",
           cursor: [170, 198],
           activeSource: "dorahacks",
           scan: 0,
           filter: "all"
         },
         {
-          at: 7,
+          at: 11.51,
           step: "Step 2",
-          title: "Run the agent scan",
-          text: "The agent pulls raw fragments into one source inbox and starts scoring them.",
+          title: "Click scan",
+          text: "Radar pulls those fragments into one inbox. Here I click scan, and the agent starts turning messy context into structured signals.",
           cursor: [162, 584],
           click: true,
+          clickAt: 4.1,
           activeSource: "telegram",
           scan: 36,
           filter: "all",
           sourceMode: "scanning"
         },
         {
-          at: 14,
+          at: 22.15,
           step: "Step 3",
-          title: "Rank the signals",
-          text: "The dashboard updates with confidence, tags and source-backed signal cards.",
+          title: "Rank the feed",
+          text: "The ranked feed appears. Each card has a confidence score, evidence tags, and the source it came from.",
           cursor: [458, 238],
           activeSource: "criteria",
           scan: 100,
@@ -884,12 +888,13 @@
           bars: [65, 54, 36, 28]
         },
         {
-          at: 22,
+          at: 30.65,
           step: "Step 4",
-          title: "Filter to deadline and deployment edge",
-          text: "A judge or investor can quickly focus the feed on the most urgent execution signals.",
+          title: "Filter urgent edge",
+          text: "Now I filter for deadline and deployment edge, because those signals can change our next action fastest.",
           cursor: [485, 244],
           click: true,
+          clickAt: 1.5,
           activeSource: "dorahacks",
           scan: 100,
           filter: "deadline",
@@ -898,12 +903,13 @@
           bars: [100, 85, 68, 57]
         },
         {
-          at: 31,
+          at: 38.48,
           step: "Step 5",
-          title: "Open one signal and inspect the reasoning",
-          text: "The detail panel explains what happened, why it matters, evidence, confidence and the next action.",
-          cursor: [515, 406],
+          title: "Open the top signal",
+          text: "Opening the top signal shows the reasoning: what happened, why it matters, the evidence, and the suggested move.",
+          cursor: [515, 292],
           click: true,
+          clickAt: 1.2,
           activeSource: "dorahacks",
           scan: 100,
           filter: "deadline",
@@ -914,10 +920,10 @@
           evidence: true
         },
         {
-          at: 42,
+          at: 46.78,
           step: "Step 6",
-          title: "Turn raw source text into a scored signal",
-          text: "The right panel shows the transformation: source quality, score rationale and recommended action.",
+          title: "Show the scoring logic",
+          text: "On the right, you can see raw source text becoming a scored signal. Source quality, urgency, novelty, and utility are all part of the score.",
           cursor: [1056, 285],
           activeSource: "criteria",
           scan: 100,
@@ -931,12 +937,13 @@
           evidence: true
         },
         {
-          at: 54,
+          at: 58.22,
           step: "Step 7",
-          title: "Commit the high-confidence signal on Mantle",
-          text: "The signal hash is committed through SignalRegistry, giving judges a verifiable proof trail.",
+          title: "Commit proof on Mantle",
+          text: "For high-confidence signals, Radar creates a hash and commits it through SignalRegistry on Mantle mainnet.",
           cursor: [1080, 575],
           click: true,
+          clickAt: 3.2,
           activeSource: "mantlescan",
           scan: 100,
           filter: "deadline",
@@ -948,10 +955,10 @@
           evidence: true
         },
         {
-          at: 63,
+          at: 66.07,
           step: "Step 8",
-          title: "Proof is live",
-          text: "The committed signal links back to Mantle mainnet, the public demo, GitHub repo and DoraHacks BUIDL.",
+          title: "Verify the proof trail",
+          text: "That gives judges a public proof trail: contract address, transaction hash, and the exact signal hash can be checked later.",
           cursor: [1048, 644],
           activeSource: "mantlescan",
           scan: 100,
@@ -965,10 +972,10 @@
           final: 0.22
         },
         {
-          at: 69,
+          at: 75.77,
           step: "Step 9",
-          title: "Ready for judges and users",
-          text: "This is a real MVP path: collect, rank, explain and prove Mantle-native intelligence.",
+          title: "End with the product path",
+          text: "So the product path is simple: collect early context, rank it, explain it, and prove the best signals on-chain.",
           cursor: [1072, 628],
           scan: 100,
           filter: "deadline",
@@ -1045,7 +1052,8 @@
         const t = now();
         const frame = currentFrame(t);
         const p = localProgress(t, frame);
-        const clickPulse = frame.click ? Math.max(0, 1 - Math.abs(p - 0.12) * 7) : 0;
+        const localAge = t - frame.at;
+        const clickPulse = frame.click ? Math.max(0, 1 - Math.abs(localAge - (frame.clickAt || 1.2)) * 2.6) : 0;
 
         setText(el.sourceMode, frame.sourceMode || "watching");
         setText(el.appMode, frame.appMode || "live dashboard");

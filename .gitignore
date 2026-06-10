@@ -2,11 +2,13 @@
 node_modules/
 assets/*x-banner.png
 assets/.demo-video-frames/
+assets/.demo-voice-v4/
 assets/demo-video-frame-*.png
 assets/demo-video-frame-v*.png
 assets/demo-v2-preview-*.png
 assets/demo-v3-preview-*.png
 assets/demo-recording-preview.png
+submission/*.mp3
 submission/*.mp4
 submission/*.wav
 submission/*demo*.json

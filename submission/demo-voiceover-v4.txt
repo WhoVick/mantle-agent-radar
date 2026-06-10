@@ -1,0 +1,17 @@
+Mantle alpha rarely starts as a clean dashboard. It appears in hackathon rules, Telegram replies, judging criteria, and on-chain receipts.
+
+Radar pulls those fragments into one inbox. Here I click scan, and the agent starts turning messy context into structured signals.
+
+The ranked feed appears. Each card has a confidence score, evidence tags, and the source it came from.
+
+Now I filter for deadline and deployment edge, because those signals can change our next action fastest.
+
+Opening the top signal shows the reasoning: what happened, why it matters, the evidence, and the suggested move.
+
+On the right, you can see raw source text becoming a scored signal. Source quality, urgency, novelty, and utility are all part of the score.
+
+For high-confidence signals, Radar creates a hash and commits it through SignalRegistry on Mantle mainnet.
+
+That gives judges a public proof trail: contract address, transaction hash, and the exact signal hash can be checked later.
+
+So the product path is simple: collect early context, rank it, explain it, and prove the best signals on-chain.
