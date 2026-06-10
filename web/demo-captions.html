@@ -412,6 +412,24 @@
         transform: translateY(calc((1 - var(--callout, 0)) * 8px));
       }
 
+      .callout::before {
+        content: "";
+        position: absolute;
+        left: -7px;
+        top: 18px;
+        width: 12px;
+        height: 12px;
+        border-left: 1px solid rgba(241, 191, 99, 0.72);
+        border-bottom: 1px solid rgba(241, 191, 99, 0.72);
+        background: rgba(28, 24, 17, 0.94);
+        transform: rotate(45deg);
+      }
+
+      .callout.arrow-right::before {
+        left: auto;
+        right: -7px;
+      }
+
       .callout strong {
         display: block;
         font-size: 14px;
@@ -423,6 +441,60 @@
         color: #f5e4c8;
         font-size: 12px;
         line-height: 1.3;
+      }
+
+      .focus-frame {
+        position: absolute;
+        z-index: 6;
+        left: var(--fx, 0);
+        top: var(--fy, 0);
+        width: var(--fw, 0);
+        height: var(--fh, 0);
+        border: 2px solid var(--gold);
+        box-shadow:
+          0 0 0 999px rgba(0, 0, 0, 0.12),
+          0 0 0 4px rgba(241, 191, 99, 0.12),
+          0 0 26px rgba(241, 191, 99, 0.2);
+        opacity: var(--focus-frame, 0);
+        pointer-events: none;
+      }
+
+      .focus-frame span {
+        position: absolute;
+        left: -2px;
+        top: -26px;
+        min-height: 24px;
+        display: inline-flex;
+        align-items: center;
+        padding: 0 8px;
+        background: rgba(28, 24, 17, 0.95);
+        border: 1px solid rgba(241, 191, 99, 0.72);
+        color: var(--gold);
+        font-size: 11px;
+        font-weight: 900;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      .hover-cursor {
+        --cx: 640px;
+        --cy: 360px;
+        position: absolute;
+        z-index: 9;
+        left: var(--cx);
+        top: var(--cy);
+        width: 30px;
+        height: 30px;
+        opacity: var(--cursor, 0);
+        transform: translate(-4px, -4px);
+        filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.55));
+        pointer-events: none;
+      }
+
+      .hover-cursor svg {
+        display: block;
+        width: 100%;
+        height: 100%;
       }
 
       .caption {
@@ -670,6 +742,13 @@
         <span id="calloutText">Explanation</span>
       </aside>
 
+      <div class="focus-frame" id="focusFrame" aria-hidden="true"><span id="focusLabel">Focus</span></div>
+      <div class="hover-cursor" id="hoverCursor" aria-hidden="true">
+        <svg viewBox="0 0 32 32" role="img">
+          <path d="M6 3l18 17-9 1.2 4.8 7.8-3.2 1.8-4.7-7.7L6 29V3z" fill="#f8f1e6" stroke="#0d100e" stroke-width="1.8" />
+        </svg>
+      </div>
+
       <section class="final-overlay" id="finalOverlay">
         <div>
           <span class="eyebrow">Submitted and live</span>
@@ -709,7 +788,10 @@
           scan: 0,
           filter: "all",
           callout: ["Input is messy", "The agent starts from fragments, not a clean API."],
-          calloutPos: [62, 154]
+          calloutPos: [340, 154],
+          target: [38, 148, 278, 424],
+          cursor: [286, 196],
+          focusLabel: "Source fragments"
         },
         {
           at: 7,
@@ -723,7 +805,10 @@
           sourceStatus: "scanning",
           scanLabel: "Agent scan running",
           callout: ["Agent scan", "Sources are normalized before ranking."],
-          calloutPos: [64, 554]
+          calloutPos: [340, 548],
+          target: [38, 584, 278, 44],
+          cursor: [176, 602],
+          focusLabel: "Scan control"
         },
         {
           at: 14,
@@ -737,7 +822,10 @@
           selected: "prize",
           signalCount: "10",
           callout: ["Ranked feed", "Confidence and tags make the signal scannable."],
-          calloutPos: [500, 234]
+          calloutPos: [700, 258],
+          target: [350, 282, 332, 124],
+          cursor: [654, 309],
+          focusLabel: "Top ranked signal"
         },
         {
           at: 21,
@@ -752,7 +840,10 @@
           signalCount: "3",
           dim: ["registry", "criteria"],
           callout: ["Deadline filter", "Only urgent execution signals stay in focus."],
-          calloutPos: [438, 286]
+          calloutPos: [536, 238],
+          target: [438, 240, 86, 32],
+          cursor: [480, 257],
+          focusLabel: "Active filter"
         },
         {
           at: 28,
@@ -767,7 +858,10 @@
           signalCount: "3",
           dim: ["registry", "criteria"],
           callout: ["Why it matters", "The user sees evidence and a next action, not just a score."],
-          calloutPos: [690, 370]
+          calloutPos: [914, 300],
+          target: [690, 282, 200, 328],
+          cursor: [760, 520],
+          focusLabel: "Signal explanation"
         },
         {
           at: 36,
@@ -785,7 +879,11 @@
           rawText: "Criteria rewards insight value, data quality, investment utility and scalable pipelines.",
           done: ["source", "score", "action"],
           callout: ["Raw -> scored", "The scoring path is visible enough for judges to inspect."],
-          calloutPos: [918, 174]
+          calloutPos: [642, 170],
+          calloutSide: "right",
+          target: [918, 162, 318, 202],
+          cursor: [1190, 324],
+          focusLabel: "Scoring logic"
         },
         {
           at: 44,
@@ -801,7 +899,11 @@
           proofStatus: "confirmed",
           done: ["source", "score", "action"],
           callout: ["On-chain proof", "Contract, transaction and signal hash are public."],
-          calloutPos: [918, 470]
+          calloutPos: [642, 442],
+          calloutSide: "right",
+          target: [918, 456, 318, 154],
+          cursor: [1186, 526],
+          focusLabel: "Mantle proof"
         },
         {
           at: 51,
@@ -817,7 +919,11 @@
           proofStatus: "confirmed",
           final: 0.94,
           callout: ["Submission package", "Demo, code and proof are all linked."],
-          calloutPos: [796, 194]
+          calloutPos: [560, 196],
+          calloutSide: "right",
+          target: [794, 194, 420, 274],
+          cursor: [1114, 286],
+          focusLabel: "Public links"
         }
       ];
 
@@ -846,6 +952,9 @@
         callout: document.getElementById("callout"),
         calloutTitle: document.getElementById("calloutTitle"),
         calloutText: document.getElementById("calloutText"),
+        focusFrame: document.getElementById("focusFrame"),
+        focusLabel: document.getElementById("focusLabel"),
+        hoverCursor: document.getElementById("hoverCursor"),
         finalOverlay: document.getElementById("finalOverlay")
       };
 
@@ -918,6 +1027,20 @@
         el.callout.style.left = `${x}px`;
         el.callout.style.top = `${y}px`;
         el.callout.style.setProperty("--callout", scene.callout ? "1" : "0");
+        el.callout.classList.toggle("arrow-right", scene.calloutSide === "right");
+
+        const [fx, fy, fw, fh] = scene.target || [0, 0, 0, 0];
+        el.focusFrame.style.setProperty("--fx", `${fx}px`);
+        el.focusFrame.style.setProperty("--fy", `${fy}px`);
+        el.focusFrame.style.setProperty("--fw", `${fw}px`);
+        el.focusFrame.style.setProperty("--fh", `${fh}px`);
+        el.focusFrame.style.setProperty("--focus-frame", scene.target ? "1" : "0");
+        el.focusLabel.textContent = scene.focusLabel || "Focus";
+
+        const [cx, cy] = scene.cursor || [640, 360];
+        el.hoverCursor.style.setProperty("--cx", `${cx}px`);
+        el.hoverCursor.style.setProperty("--cy", `${cy}px`);
+        el.hoverCursor.style.setProperty("--cursor", scene.cursor ? "1" : "0");
         el.finalOverlay.style.setProperty("--final", String(scene.final || 0));
       }
 
