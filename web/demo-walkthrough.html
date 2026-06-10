@@ -1,0 +1,1105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mantle Agent Radar Walkthrough</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0d100e;
+        --panel: #171a16;
+        --panel-2: #20231e;
+        --line: #394034;
+        --line-hot: #6be7a2;
+        --text: #f8f1e6;
+        --muted: #baad99;
+        --soft: #e5d7c4;
+        --green: #6be7a2;
+        --teal: #58d0c7;
+        --gold: #f1bf63;
+        --coral: #f0826b;
+        --violet: #aea6ff;
+        --shadow: 0 22px 70px rgba(0, 0, 0, 0.32);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 12% 18%, rgba(88, 208, 199, 0.17), transparent 30%),
+          radial-gradient(circle at 92% 13%, rgba(241, 191, 99, 0.14), transparent 28%),
+          linear-gradient(145deg, #121710 0%, var(--bg) 70%);
+        color: var(--text);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      .stage {
+        width: 1280px;
+        height: 720px;
+        margin: 0 auto;
+        position: relative;
+        padding: 22px 28px;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 18px;
+        height: 58px;
+      }
+
+      .brand {
+        display: grid;
+        grid-template-columns: 48px minmax(0, 1fr);
+        gap: 12px;
+        align-items: center;
+      }
+
+      .brand img {
+        width: 48px;
+        height: 48px;
+        object-fit: cover;
+        border: 1px solid rgba(107, 231, 162, 0.52);
+      }
+
+      .eyebrow,
+      .label,
+      .mini,
+      .tag,
+      .source-meta,
+      .step-label {
+        color: var(--muted);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0;
+      }
+
+      .brand strong {
+        display: block;
+        margin-top: 3px;
+        font-size: 19px;
+      }
+
+      .status-strip {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .status-chip {
+        min-height: 32px;
+        display: inline-flex;
+        align-items: center;
+        border: 1px solid rgba(88, 208, 199, 0.38);
+        background: rgba(23, 26, 22, 0.92);
+        color: #dffaf4;
+        padding: 0 10px;
+        font-size: 12px;
+        font-weight: 760;
+      }
+
+      .status-chip.hot {
+        border-color: rgba(107, 231, 162, 0.55);
+        color: var(--green);
+      }
+
+      .workspace {
+        position: absolute;
+        left: 28px;
+        right: 28px;
+        top: 92px;
+        bottom: 92px;
+        display: grid;
+        grid-template-columns: 300px minmax(0, 1fr) 348px;
+        gap: 12px;
+      }
+
+      .panel {
+        border: 1px solid var(--line);
+        background: rgba(23, 26, 22, 0.93);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .panel-header {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .panel-header h2 {
+        font-size: 16px;
+      }
+
+      .source-inbox {
+        padding: 10px;
+        display: grid;
+        gap: 7px;
+      }
+
+      .source-item {
+        position: relative;
+        min-height: 74px;
+        padding: 10px;
+        border: 1px solid rgba(57, 64, 52, 0.92);
+        background: #20231e;
+        transition: transform 240ms ease, border-color 240ms ease, background 240ms ease;
+      }
+
+      .source-item.active {
+        border-color: rgba(107, 231, 162, 0.68);
+        background: rgba(107, 231, 162, 0.1);
+        transform: translateX(4px);
+      }
+
+      .source-item h3 {
+        margin-top: 5px;
+        font-size: 14px;
+        line-height: 1.16;
+      }
+
+      .source-item p {
+        margin-top: 7px;
+        color: #dfd3c2;
+        font-size: 11px;
+        line-height: 1.3;
+      }
+
+      .scan-button,
+      .filter,
+      .commit-button {
+        border: 1px solid rgba(107, 231, 162, 0.5);
+        background: rgba(107, 231, 162, 0.11);
+        color: var(--green);
+        font: inherit;
+        font-weight: 800;
+      }
+
+      .scan-button {
+        min-height: 34px;
+        margin: 0 10px 10px;
+        width: calc(100% - 20px);
+      }
+
+      .scan-button.active,
+      .commit-button.active,
+      .filter.active {
+        background: rgba(107, 231, 162, 0.2);
+        box-shadow: 0 0 0 2px rgba(107, 231, 162, 0.18);
+      }
+
+      .scan-progress {
+        height: 6px;
+        margin: 0 10px 11px;
+        background: #343b30;
+        overflow: hidden;
+      }
+
+      .scan-progress span {
+        display: block;
+        width: var(--scan, 0%);
+        height: 100%;
+        background: linear-gradient(90deg, var(--teal), var(--gold));
+      }
+
+      .app {
+        display: grid;
+        grid-template-rows: auto auto minmax(0, 1fr);
+      }
+
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 8px;
+        padding: 10px;
+      }
+
+      .metric {
+        min-height: 62px;
+        border: 1px solid var(--line);
+        background: rgba(32, 35, 30, 0.85);
+        padding: 12px;
+      }
+
+      .metric strong {
+        display: block;
+        margin-top: 5px;
+        font-size: 22px;
+      }
+
+      .metric.proof {
+        border-color: rgba(107, 231, 162, 0.55);
+      }
+
+      .filters {
+        display: flex;
+        gap: 8px;
+        padding: 0 10px 10px;
+      }
+
+      .filter {
+        min-height: 30px;
+        min-width: 78px;
+        padding: 0 10px;
+      }
+
+      .product-grid {
+        display: grid;
+        grid-template-columns: 330px minmax(0, 1fr);
+        gap: 10px;
+        padding: 0 10px 10px;
+        min-height: 0;
+      }
+
+      .signal-list {
+        display: grid;
+        gap: 8px;
+        align-content: start;
+      }
+
+      .signal-card {
+        min-height: 86px;
+        border: 1px solid var(--line);
+        background: #20231e;
+        padding: 11px;
+        transition: opacity 220ms ease, transform 220ms ease, border-color 220ms ease, background 220ms ease;
+      }
+
+      .signal-card h3 {
+        font-size: 13px;
+        line-height: 1.16;
+      }
+
+      .signal-card p {
+        margin-top: 7px;
+        color: #ded2c1;
+        font-size: 11px;
+        line-height: 1.3;
+      }
+
+      .signal-head {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 48px;
+        gap: 8px;
+      }
+
+      .score {
+        color: var(--green);
+        font-size: 18px;
+        font-weight: 900;
+        text-align: right;
+      }
+
+      .signal-card.selected {
+        border-color: rgba(88, 208, 199, 0.72);
+        background: #272a23;
+        transform: translateX(4px);
+      }
+
+      .signal-card.dimmed {
+        opacity: 0.3;
+        transform: scale(0.98);
+      }
+
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-top: 8px;
+      }
+
+      .tag {
+        border: 1px solid var(--line);
+        padding: 3px 6px;
+        font-size: 10px;
+      }
+
+      .detail {
+        border: 1px solid var(--line);
+        background: rgba(32, 35, 30, 0.86);
+        padding: 13px;
+        overflow: hidden;
+      }
+
+      .detail.focus {
+        border-color: rgba(107, 231, 162, 0.6);
+        box-shadow: 0 0 0 2px rgba(107, 231, 162, 0.14);
+      }
+
+      .detail h2 {
+        margin-top: 8px;
+        font-size: 22px;
+        line-height: 1.1;
+      }
+
+      .detail p {
+        margin-top: 8px;
+        color: #e4d7c6;
+        font-size: 12px;
+        line-height: 1.32;
+      }
+
+      .action {
+        margin-top: 9px;
+        padding: 8px 10px;
+        border-left: 3px solid var(--gold);
+        background: rgba(241, 191, 99, 0.1);
+        color: #f2dfc2;
+        font-size: 11px;
+        line-height: 1.3;
+      }
+
+      .bars {
+        display: grid;
+        gap: 6px;
+        margin-top: 9px;
+      }
+
+      .bar-row {
+        display: grid;
+        grid-template-columns: 130px minmax(0, 1fr) 32px;
+        gap: 8px;
+        align-items: center;
+        color: var(--muted);
+        font-size: 10px;
+      }
+
+      .track {
+        height: 7px;
+        background: #343b30;
+      }
+
+      .fill {
+        height: 100%;
+        width: var(--bar, 0%);
+        background: linear-gradient(90deg, var(--teal), var(--gold));
+      }
+
+      .evidence {
+        margin-top: 8px;
+        padding: 8px;
+        border: 1px solid rgba(88, 208, 199, 0.36);
+        background: rgba(88, 208, 199, 0.06);
+      }
+
+      .evidence strong {
+        display: block;
+        color: var(--teal);
+        font-size: 12px;
+      }
+
+      .evidence span {
+        display: block;
+        margin-top: 4px;
+        color: #dcd0bf;
+        font-size: 11px;
+        line-height: 1.3;
+      }
+
+      .right-stack {
+        display: grid;
+        grid-template-rows: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .transform,
+      .proof-panel {
+        padding: 14px;
+        position: relative;
+      }
+
+      .transform h2,
+      .proof-panel h2 {
+        font-size: 17px;
+      }
+
+      .raw-box,
+      .agent-box,
+      .proof-box {
+        border: 1px solid var(--line);
+        background: #20231e;
+        padding: 9px;
+        margin-top: 8px;
+      }
+
+      .raw-box.active,
+      .agent-box.active,
+      .proof-box.active {
+        border-color: rgba(107, 231, 162, 0.62);
+        box-shadow: 0 0 0 2px rgba(107, 231, 162, 0.12);
+      }
+
+      .raw-box p,
+      .agent-box p,
+      .proof-box p {
+        color: #e1d5c4;
+        font-size: 11px;
+        line-height: 1.3;
+      }
+
+      .agent-steps {
+        display: grid;
+        gap: 6px;
+        margin-top: 9px;
+      }
+
+      .agent-step {
+        min-height: 26px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        border: 1px solid var(--line);
+        padding: 0 8px;
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      .agent-step.done {
+        color: var(--green);
+        border-color: rgba(107, 231, 162, 0.44);
+      }
+
+      .commit-button {
+        min-height: 32px;
+        width: 100%;
+        margin-top: 8px;
+      }
+
+      .hash {
+        overflow-wrap: anywhere;
+        color: var(--green);
+        font: 11px/1.35 ui-monospace, SFMono-Regular, Consolas, monospace;
+      }
+
+      .tx-link {
+        color: var(--gold);
+        font-size: 12px;
+        line-height: 1.36;
+        overflow-wrap: anywhere;
+      }
+
+      .caption {
+        position: absolute;
+        left: 28px;
+        right: 28px;
+        bottom: 14px;
+        min-height: 48px;
+        display: grid;
+        grid-template-columns: 210px minmax(0, 1fr);
+        gap: 18px;
+        align-items: center;
+        border: 1px solid rgba(107, 231, 162, 0.44);
+        background: rgba(9, 15, 12, 0.96);
+        padding: 8px 14px;
+      }
+
+      .caption h2 {
+        margin-top: 3px;
+        font-size: 16px;
+        line-height: 1.05;
+      }
+
+      .caption p {
+        color: #f0e0cd;
+        font-size: 14px;
+        line-height: 1.32;
+      }
+
+      .cursor {
+        --x: 640px;
+        --y: 360px;
+        position: absolute;
+        left: var(--x);
+        top: var(--y);
+        z-index: 10;
+        width: 28px;
+        height: 28px;
+        pointer-events: none;
+        filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.45));
+        transform: translate(-2px, -2px);
+      }
+
+      .cursor svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .click-ring {
+        position: absolute;
+        left: calc(var(--x) + 2px);
+        top: calc(var(--y) + 2px);
+        z-index: 9;
+        width: 38px;
+        height: 38px;
+        border: 2px solid var(--gold);
+        border-radius: 999px;
+        opacity: var(--click, 0);
+        transform: translate(-50%, -50%) scale(var(--click-scale, 0.55));
+        pointer-events: none;
+      }
+
+      .final-overlay {
+        position: absolute;
+        inset: 92px 28px 92px;
+        z-index: 8;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 410px;
+        gap: 28px;
+        align-items: center;
+        padding: 36px;
+        border: 1px solid rgba(107, 231, 162, 0.48);
+        background: rgba(11, 14, 12, var(--final, 0));
+        opacity: var(--final, 0);
+        pointer-events: none;
+      }
+
+      .final-overlay h2 {
+        font-size: 58px;
+        line-height: 1;
+      }
+
+      .final-overlay p {
+        margin-top: 16px;
+        color: #e5d8c7;
+        font-size: 23px;
+        line-height: 1.34;
+      }
+
+      .link-stack {
+        display: grid;
+        gap: 11px;
+      }
+
+      .link-card {
+        border: 1px solid rgba(241, 191, 99, 0.46);
+        background: rgba(241, 191, 99, 0.09);
+        padding: 14px;
+      }
+
+      .link-card strong {
+        display: block;
+        margin-top: 5px;
+        color: var(--gold);
+        font-size: 16px;
+        line-height: 1.25;
+        overflow-wrap: anywhere;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="stage">
+      <header class="topbar">
+        <div class="brand">
+          <img src="../assets/mantle-agent-radar-logo.png" alt="" />
+          <div>
+            <div class="eyebrow">The Turing Test Hackathon 2026 / AI Alpha & Data</div>
+            <strong>Mantle Agent Radar</strong>
+          </div>
+        </div>
+        <div class="status-strip">
+          <span class="status-chip">10 signals</span>
+          <span class="status-chip">4 source types</span>
+          <span class="status-chip hot">Mantle proof live</span>
+        </div>
+      </header>
+
+      <section class="workspace">
+        <aside class="panel">
+          <div class="panel-header">
+            <h2>Source Inbox</h2>
+            <span class="mini" id="sourceMode">waiting</span>
+          </div>
+          <div class="source-inbox">
+            <article class="source-item" data-source="dorahacks">
+              <span class="source-meta">DoraHacks / deadline</span>
+              <h3>Prize map and submission deadline</h3>
+              <p>Track prizes, community awards, UI/UX prize, deployment upside.</p>
+            </article>
+            <article class="source-item" data-source="telegram">
+              <span class="source-meta">Telegram / organizer reply</span>
+              <h3>Mainnet deployment is preferred</h3>
+              <p>Organizer says testnet counts, but mainnet is stronger for final selection.</p>
+            </article>
+            <article class="source-item" data-source="criteria">
+              <span class="source-meta">Criteria sheet / Mirana</span>
+              <h3>Investor-grade insight is rewarded</h3>
+              <p>Source quality, investment utility and robust data pipelines matter.</p>
+            </article>
+            <article class="source-item" data-source="mantlescan">
+              <span class="source-meta">Mantlescan / contract</span>
+              <h3>SignalRegistry proof transaction</h3>
+              <p>High-confidence signal hash is committed on Mantle mainnet.</p>
+            </article>
+          </div>
+          <button class="scan-button" id="scanButton">Run Radar Scan</button>
+          <div class="scan-progress"><span id="scanProgress"></span></div>
+        </aside>
+
+        <section class="panel app">
+          <div class="panel-header">
+            <h2>Investor-grade Mantle signals</h2>
+            <span class="mini" id="appMode">live dashboard</span>
+          </div>
+          <section class="metrics">
+            <div class="metric">
+              <span class="label">Signals</span>
+              <strong id="metricSignals">10</strong>
+            </div>
+            <div class="metric">
+              <span class="label">Top confidence</span>
+              <strong>75%</strong>
+            </div>
+            <div class="metric">
+              <span class="label">Sources</span>
+              <strong>10</strong>
+            </div>
+            <div class="metric proof">
+              <span class="label">On-chain proof</span>
+              <strong id="proofMetric">Live</strong>
+            </div>
+          </section>
+          <nav class="filters" aria-label="Demo filters">
+            <button class="filter" data-filter="all">All</button>
+            <button class="filter" data-filter="deadline">Deadline</button>
+            <button class="filter" data-filter="alpha">Alpha</button>
+            <button class="filter" data-filter="risk">Risk</button>
+          </nav>
+          <section class="product-grid">
+            <div class="signal-list">
+              <article class="signal-card" data-card="prize">
+                <div class="signal-head">
+                  <h3>Prize map shows four parallel money paths</h3>
+                  <span class="score">75</span>
+                </div>
+                <p>Grand Champion, track prizes, community voting, UI/UX and deployment awards.</p>
+                <div class="tags">
+                  <span class="tag">deadline</span>
+                  <span class="tag">prize</span>
+                  <span class="tag">deployment</span>
+                </div>
+              </article>
+              <article class="signal-card" data-card="registry">
+                <div class="signal-head">
+                  <h3>Mantle ERC-8004 Identity Registry is live</h3>
+                  <span class="score">70</span>
+                </div>
+                <p>Mainnet registry address gives agent identity projects a verifiable anchor.</p>
+                <div class="tags">
+                  <span class="tag">mainnet</span>
+                  <span class="tag">registry</span>
+                </div>
+              </article>
+              <article class="signal-card" data-card="criteria">
+                <div class="signal-head">
+                  <h3>Alpha & Data rewards investor-grade insights</h3>
+                  <span class="score">67</span>
+                </div>
+                <p>Judging criteria favor source quality, investment utility and scalable pipelines.</p>
+                <div class="tags">
+                  <span class="tag">alpha</span>
+                  <span class="tag">criteria</span>
+                </div>
+              </article>
+            </div>
+            <article class="detail" id="detailPanel">
+              <span class="mini" id="detailType">selected signal</span>
+              <h2 id="detailTitle">Prize map shows four parallel money paths</h2>
+              <p id="detailSummary">
+                The agent converts raw hackathon and ecosystem context into a concrete execution signal:
+                there are several ways to win, not just one track prize.
+              </p>
+              <div class="action" id="detailAction">
+                Recommended action: optimize the submission around track fit, community visibility, UI
+                clarity and live Mantle deployment.
+              </div>
+              <div class="bars">
+                <div class="bar-row">
+                  <span>Source quality</span>
+                  <div class="track"><div class="fill" data-bar="source"></div></div>
+                  <strong>100</strong>
+                </div>
+                <div class="bar-row">
+                  <span>Mantle relevance</span>
+                  <div class="track"><div class="fill" data-bar="mantle"></div></div>
+                  <strong>85</strong>
+                </div>
+                <div class="bar-row">
+                  <span>Urgency</span>
+                  <div class="track"><div class="fill" data-bar="urgency"></div></div>
+                  <strong>68</strong>
+                </div>
+                <div class="bar-row">
+                  <span>Investment utility</span>
+                  <div class="track"><div class="fill" data-bar="utility"></div></div>
+                  <strong>57</strong>
+                </div>
+              </div>
+              <div class="evidence" id="evidenceBox">
+                <strong>Evidence</strong>
+                <span>Mantle DevHub / observed 2026-06-08 / prize and deadline context</span>
+              </div>
+            </article>
+          </section>
+        </section>
+
+        <aside class="right-stack">
+          <section class="panel transform">
+            <div class="panel-header">
+              <h2>Raw Source -> Signal</h2>
+              <span class="mini" id="transformMode">idle</span>
+            </div>
+            <div class="raw-box" id="rawBox">
+              <span class="label">Raw context</span>
+              <p id="rawText">Organizer and criteria fragments are waiting to be scored.</p>
+            </div>
+            <div class="agent-box" id="agentBox">
+              <span class="label">Agent reasoning</span>
+              <div class="agent-steps">
+                <div class="agent-step" data-step="source">Source quality <strong>pending</strong></div>
+                <div class="agent-step" data-step="score">Signal score <strong>pending</strong></div>
+                <div class="agent-step" data-step="action">Recommended action <strong>pending</strong></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel proof-panel">
+            <div class="panel-header">
+              <h2>Mantle Proof</h2>
+              <span class="mini" id="proofMode">ready</span>
+            </div>
+            <div class="proof-box" id="proofBox">
+              <span class="label">Signal hash</span>
+              <p class="hash" id="hashText">0xa9f5171c0fe010f1f4a09c375b7690972d8f1c3038c01b363b51a6d3291731fe</p>
+            </div>
+            <button class="commit-button" id="commitButton">Commit Proof to Mantle</button>
+            <div class="proof-box" id="txBox">
+              <span class="label">Result</span>
+              <p class="tx-link" id="txText">Waiting for proof transaction...</p>
+            </div>
+          </section>
+        </aside>
+      </section>
+
+      <footer class="caption">
+        <div>
+          <span class="step-label" id="captionStep">Step 1</span>
+          <h2 id="captionTitle">Start from scattered Mantle context</h2>
+        </div>
+        <p id="captionText">
+          Radar watches hackathon pages, Telegram replies, criteria sheets and on-chain references.
+        </p>
+      </footer>
+
+      <section class="final-overlay" id="finalOverlay">
+        <div>
+          <span class="eyebrow">Submitted and live</span>
+          <h2>Mantle Agent Radar</h2>
+          <p>
+            AI Alpha & Data agent for ranked, evidence-backed and verifiable Mantle ecosystem signals.
+          </p>
+        </div>
+        <aside class="link-stack">
+          <div class="link-card">
+            <span class="label">Live demo</span>
+            <strong>whovick.github.io/mantle-agent-radar</strong>
+          </div>
+          <div class="link-card">
+            <span class="label">GitHub</span>
+            <strong>github.com/WhoVick/mantle-agent-radar</strong>
+          </div>
+          <div class="link-card">
+            <span class="label">DoraHacks</span>
+            <strong>dorahacks.io/buidl/44505</strong>
+          </div>
+        </aside>
+      </section>
+
+      <div class="click-ring" id="clickRing"></div>
+      <div class="cursor" id="cursor" aria-hidden="true">
+        <svg viewBox="0 0 32 32" fill="none">
+          <path d="M6 3L25 17L17 19L13 28L6 3Z" fill="#f8f1e6" stroke="#10140f" stroke-width="2" />
+        </svg>
+      </div>
+    </main>
+
+    <script>
+      const duration = 74;
+      const fixedTime = new URLSearchParams(window.location.search).get("t");
+      const startedAt = Date.now();
+
+      const timeline = [
+        {
+          at: 0,
+          step: "Step 1",
+          title: "Start from scattered Mantle context",
+          text: "Radar watches hackathon pages, Telegram replies, criteria sheets and on-chain references.",
+          cursor: [170, 198],
+          activeSource: "dorahacks",
+          scan: 0,
+          filter: "all"
+        },
+        {
+          at: 7,
+          step: "Step 2",
+          title: "Run the agent scan",
+          text: "The agent pulls raw fragments into one source inbox and starts scoring them.",
+          cursor: [162, 584],
+          click: true,
+          activeSource: "telegram",
+          scan: 36,
+          filter: "all",
+          sourceMode: "scanning"
+        },
+        {
+          at: 14,
+          step: "Step 3",
+          title: "Rank the signals",
+          text: "The dashboard updates with confidence, tags and source-backed signal cards.",
+          cursor: [458, 238],
+          activeSource: "criteria",
+          scan: 100,
+          filter: "all",
+          appMode: "ranked output",
+          selected: "prize",
+          bars: [65, 54, 36, 28]
+        },
+        {
+          at: 22,
+          step: "Step 4",
+          title: "Filter to deadline and deployment edge",
+          text: "A judge or investor can quickly focus the feed on the most urgent execution signals.",
+          cursor: [485, 244],
+          click: true,
+          activeSource: "dorahacks",
+          scan: 100,
+          filter: "deadline",
+          selected: "prize",
+          dim: ["registry", "criteria"],
+          bars: [100, 85, 68, 57]
+        },
+        {
+          at: 31,
+          step: "Step 5",
+          title: "Open one signal and inspect the reasoning",
+          text: "The detail panel explains what happened, why it matters, evidence, confidence and the next action.",
+          cursor: [515, 406],
+          click: true,
+          activeSource: "dorahacks",
+          scan: 100,
+          filter: "deadline",
+          selected: "prize",
+          dim: ["registry", "criteria"],
+          focusDetail: true,
+          bars: [100, 85, 68, 57],
+          evidence: true
+        },
+        {
+          at: 42,
+          step: "Step 6",
+          title: "Turn raw source text into a scored signal",
+          text: "The right panel shows the transformation: source quality, score rationale and recommended action.",
+          cursor: [1056, 285],
+          activeSource: "criteria",
+          scan: 100,
+          filter: "deadline",
+          selected: "prize",
+          focusTransform: true,
+          transformMode: "reasoning",
+          rawText: "Criteria rewards insight value, data quality, investment utility and scalable pipelines.",
+          agentSteps: ["source", "score", "action"],
+          bars: [100, 85, 68, 57],
+          evidence: true
+        },
+        {
+          at: 54,
+          step: "Step 7",
+          title: "Commit the high-confidence signal on Mantle",
+          text: "The signal hash is committed through SignalRegistry, giving judges a verifiable proof trail.",
+          cursor: [1080, 575],
+          click: true,
+          activeSource: "mantlescan",
+          scan: 100,
+          filter: "deadline",
+          selected: "prize",
+          focusProof: true,
+          proofMode: "committing",
+          txText: "Sending commitSignal transaction...",
+          bars: [100, 85, 68, 57],
+          evidence: true
+        },
+        {
+          at: 63,
+          step: "Step 8",
+          title: "Proof is live",
+          text: "The committed signal links back to Mantle mainnet, the public demo, GitHub repo and DoraHacks BUIDL.",
+          cursor: [1048, 644],
+          activeSource: "mantlescan",
+          scan: 100,
+          filter: "deadline",
+          selected: "prize",
+          focusProof: true,
+          proofMode: "confirmed",
+          txText: "Mantlescan tx: 0x505a05c21390d91993d8bce153d927629db4e05e96bca8260ac2a743ea478ad9",
+          bars: [100, 85, 68, 57],
+          evidence: true,
+          final: 0.22
+        },
+        {
+          at: 69,
+          step: "Step 9",
+          title: "Ready for judges and users",
+          text: "This is a real MVP path: collect, rank, explain and prove Mantle-native intelligence.",
+          cursor: [1072, 628],
+          scan: 100,
+          filter: "deadline",
+          selected: "prize",
+          proofMode: "confirmed",
+          txText: "Mantlescan tx: 0x505a05c21390d91993d8bce153d927629db4e05e96bca8260ac2a743ea478ad9",
+          final: 0.96
+        }
+      ];
+
+      const el = {
+        body: document.body,
+        sourceMode: document.getElementById("sourceMode"),
+        appMode: document.getElementById("appMode"),
+        transformMode: document.getElementById("transformMode"),
+        proofMode: document.getElementById("proofMode"),
+        scanButton: document.getElementById("scanButton"),
+        scanProgress: document.getElementById("scanProgress"),
+        detailPanel: document.getElementById("detailPanel"),
+        evidenceBox: document.getElementById("evidenceBox"),
+        rawBox: document.getElementById("rawBox"),
+        rawText: document.getElementById("rawText"),
+        agentBox: document.getElementById("agentBox"),
+        proofBox: document.getElementById("proofBox"),
+        commitButton: document.getElementById("commitButton"),
+        txBox: document.getElementById("txBox"),
+        txText: document.getElementById("txText"),
+        captionStep: document.getElementById("captionStep"),
+        captionTitle: document.getElementById("captionTitle"),
+        captionText: document.getElementById("captionText"),
+        cursor: document.getElementById("cursor"),
+        clickRing: document.getElementById("clickRing"),
+        finalOverlay: document.getElementById("finalOverlay"),
+        metricSignals: document.getElementById("metricSignals")
+      };
+
+      function now() {
+        if (fixedTime !== null) return Math.max(0, Math.min(Number(fixedTime) || 0, duration));
+        return Math.min((Date.now() - startedAt) / 1000, duration);
+      }
+
+      function currentFrame(t) {
+        let current = timeline[0];
+        for (const item of timeline) {
+          if (t >= item.at) current = item;
+        }
+        return current;
+      }
+
+      function localProgress(t, frame) {
+        const next = timeline.find((item) => item.at > frame.at);
+        const end = next ? next.at : duration;
+        return Math.max(0, Math.min((t - frame.at) / Math.max(end - frame.at, 0.01), 1));
+      }
+
+      function setText(node, value) {
+        node.textContent = value;
+      }
+
+      function toggleClass(selector, activeValue, className, attribute = "data-source") {
+        document.querySelectorAll(selector).forEach((node) => {
+          node.classList.toggle(className, node.getAttribute(attribute) === activeValue);
+        });
+      }
+
+      function applyBars(values = [0, 0, 0, 0]) {
+        const bars = document.querySelectorAll("[data-bar]");
+        bars.forEach((bar, index) => {
+          bar.style.setProperty("--bar", `${values[index] || 0}%`);
+        });
+      }
+
+      function render() {
+        const t = now();
+        const frame = currentFrame(t);
+        const p = localProgress(t, frame);
+        const clickPulse = frame.click ? Math.max(0, 1 - Math.abs(p - 0.12) * 7) : 0;
+
+        setText(el.sourceMode, frame.sourceMode || "watching");
+        setText(el.appMode, frame.appMode || "live dashboard");
+        setText(el.transformMode, frame.transformMode || "idle");
+        setText(el.proofMode, frame.proofMode || "ready");
+        setText(el.captionStep, frame.step);
+        setText(el.captionTitle, frame.title);
+        setText(el.captionText, frame.text);
+        setText(el.rawText, frame.rawText || "Organizer and criteria fragments are waiting to be scored.");
+        setText(el.txText, frame.txText || "Waiting for proof transaction...");
+
+        el.scanButton.classList.toggle("active", frame.sourceMode === "scanning");
+        el.commitButton.classList.toggle("active", frame.proofMode === "committing");
+        el.scanProgress.style.setProperty("--scan", `${frame.scan || 0}%`);
+        el.metricSignals.textContent = frame.filter === "deadline" ? "3" : "10";
+
+        document.querySelectorAll(".filter").forEach((node) => {
+          node.classList.toggle("active", node.dataset.filter === (frame.filter || "all"));
+        });
+        document.querySelectorAll(".signal-card").forEach((node) => {
+          const key = node.dataset.card;
+          node.classList.toggle("selected", key === frame.selected);
+          node.classList.toggle("dimmed", (frame.dim || []).includes(key));
+        });
+
+        toggleClass(".source-item", frame.activeSource, "active");
+        el.detailPanel.classList.toggle("focus", Boolean(frame.focusDetail));
+        el.evidenceBox.classList.toggle("active", Boolean(frame.evidence));
+        el.rawBox.classList.toggle("active", Boolean(frame.focusTransform));
+        el.agentBox.classList.toggle("active", Boolean(frame.focusTransform));
+        el.proofBox.classList.toggle("active", Boolean(frame.focusProof));
+        el.txBox.classList.toggle("active", frame.proofMode === "confirmed");
+
+        document.querySelectorAll(".agent-step").forEach((node) => {
+          node.classList.toggle("done", (frame.agentSteps || []).includes(node.dataset.step));
+          node.querySelector("strong").textContent = (frame.agentSteps || []).includes(node.dataset.step) ? "done" : "pending";
+        });
+
+        applyBars(frame.bars);
+
+        const [x, y] = frame.cursor || [640, 360];
+        el.cursor.style.setProperty("--x", `${x}px`);
+        el.cursor.style.setProperty("--y", `${y}px`);
+        el.clickRing.style.setProperty("--x", `${x}px`);
+        el.clickRing.style.setProperty("--y", `${y}px`);
+        el.clickRing.style.setProperty("--click", clickPulse.toFixed(3));
+        el.clickRing.style.setProperty("--click-scale", (0.55 + clickPulse * 0.7).toFixed(3));
+        el.finalOverlay.style.setProperty("--final", String(frame.final || 0));
+      }
+
+      render();
+      if (fixedTime === null) {
+        setInterval(render, 120);
+      }
+    </script>
+  </body>
+</html>

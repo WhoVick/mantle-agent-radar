@@ -1,0 +1,18 @@
+Most useful Mantle alpha does not start as a clean dashboard.
+It shows up as DoraHacks rules, Telegram replies, judging criteria, and on-chain references.
+
+Mantle Agent Radar collects those fragments into one source inbox and runs an agent scan.
+The scan ranks each item by source quality, Mantle relevance, urgency, novelty, and investment utility.
+
+Here the agent filters for deadline and deployment edge.
+One signal says the prize map creates several money paths, not just one track prize.
+The detail panel explains what happened, why it matters, the evidence behind it, and the recommended action.
+
+The right panel shows the transformation from raw source text into a scored signal.
+That is the core product: messy ecosystem context becomes investor-readable intelligence.
+
+For high-confidence output, Radar generates a signal hash and commits it through SignalRegistry on Mantle mainnet.
+Judges can verify the contract, the transaction, and the exact signal hash later.
+
+The live demo, GitHub repo, DoraHacks BUIDL, and Mantle proof are all public.
+Mantle Agent Radar is a working AI Alpha and Data MVP for tracking opportunities before they become obvious.

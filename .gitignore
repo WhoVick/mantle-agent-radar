@@ -1,6 +1,15 @@
 .venv/
 node_modules/
 assets/*x-banner.png
+assets/.demo-video-frames/
+assets/demo-video-frame-*.png
+assets/demo-video-frame-v*.png
+assets/demo-v2-preview-*.png
+assets/demo-v3-preview-*.png
+assets/demo-recording-preview.png
+submission/*.mp4
+submission/*.wav
+submission/*demo*.json
 telegram_monitor/.env
 telegram_monitor/sessions/
 telegram_monitor/data/
