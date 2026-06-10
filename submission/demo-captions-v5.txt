@@ -1,0 +1,15 @@
+1. The problem: Mantle context is scattered across DoraHacks rules, Telegram, criteria, sponsor notes and on-chain receipts.
+
+2. The agent: Radar collects those fragments into one source inbox and scores them by source quality, Mantle relevance, urgency, novelty and utility.
+
+3. The output: the feed ranks signals so investors and builders can see what matters first.
+
+4. The focus: filtering for deadline and deployment edge turns a noisy hackathon page into an action list.
+
+5. The reasoning: every signal explains what happened, why it matters, evidence, confidence and the suggested move.
+
+6. The scoring: raw source text becomes a scored signal with transparent scoring factors.
+
+7. The proof: high-confidence signal hashes can be committed through SignalRegistry on Mantle mainnet.
+
+8. The submission: live demo, GitHub, DoraHacks BUIDL and Mantle proof are public.

@@ -3,6 +3,7 @@ node_modules/
 assets/*x-banner.png
 assets/.demo-video-frames/
 assets/.demo-voice-v4/
+assets/demo-captions-v*.png
 assets/demo-video-frame-*.png
 assets/demo-video-frame-v*.png
 assets/demo-v2-preview-*.png
