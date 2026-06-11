@@ -34,6 +34,38 @@
     return tags.slice(0, 5).map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("");
   }
 
+  function judgePacketText(signal) {
+    const packet = signal.judge_packet || {};
+    const proof = signal.mainnet_proof || {};
+    const proofLine = proof.commit_tx_url
+      ? `Mantle proof: ${proof.commit_tx_url}`
+      : `Proof path: ${packet.proof || "Hash-ready for Mantle mainnet."}`;
+    return [
+      `${signal.title}`,
+      `Confidence: ${signal.confidence}%`,
+      `Why now: ${packet.why_now || signal.summary}`,
+      `Judge fit: ${packet.judge_fit || "Mantle-native AI Alpha & Data signal."}`,
+      `Investor use: ${packet.investor_use || signal.action}`,
+      `Action: ${signal.action}`,
+      proofLine,
+    ].join("\n");
+  }
+
+  async function copyText(text, button) {
+    try {
+      await navigator.clipboard.writeText(text);
+      button.textContent = "Copied";
+      setTimeout(() => {
+        button.textContent = button.dataset.label || "Copy";
+      }, 1300);
+    } catch (error) {
+      button.textContent = "Blocked";
+      setTimeout(() => {
+        button.textContent = button.dataset.label || "Copy";
+      }, 1300);
+    }
+  }
+
   function renderList() {
     const signals = filteredSignals();
     if (!signals.some((signal) => signal.id === activeId)) {
@@ -70,12 +102,47 @@
       return;
     }
 
+    const packet = signal.judge_packet || {};
+    const proof = signal.mainnet_proof || {};
     detail.innerHTML = `
       <div class="detail-grid">
-        <span class="type-badge">${escapeHtml(signal.signal_type)}</span>
+        <div class="detail-meta-row">
+          <span class="type-badge">${escapeHtml(signal.signal_type)}</span>
+          <button class="small-button" data-copy-judge data-label="Copy packet">Copy packet</button>
+        </div>
         <h3>${escapeHtml(signal.title)}</h3>
         <p class="detail-summary">${escapeHtml(signal.summary)}</p>
         <div class="action">${escapeHtml(signal.action)}</div>
+        <section class="judge-packet">
+          <h4>Judge packet</h4>
+          <div class="packet-grid">
+            <div>
+              <span>Why now</span>
+              <p>${escapeHtml(packet.why_now || "The signal may become stale if ignored.")}</p>
+            </div>
+            <div>
+              <span>Judge fit</span>
+              <p>${escapeHtml(packet.judge_fit || "Shows Mantle-native AI Alpha & Data utility.")}</p>
+            </div>
+            <div>
+              <span>Investor use</span>
+              <p>${escapeHtml(packet.investor_use || signal.action)}</p>
+            </div>
+            <div>
+              <span>Risk control</span>
+              <p>${escapeHtml(packet.risk || "Corroborate before promotion.")}</p>
+            </div>
+          </div>
+        </section>
+        ${proof.commit_tx_url ? `
+          <section class="proof-strip">
+            <div>
+              <span>Mainnet proof</span>
+              <strong>Committed on Mantle</strong>
+            </div>
+            <a href="${escapeHtml(proof.commit_tx_url)}" target="_blank" rel="noreferrer">Open tx</a>
+          </section>
+        ` : ""}
         <section>
           <h4>Score rationale</h4>
           <div class="score-bars">
@@ -94,6 +161,7 @@
             ${signal.evidence.map((item) => `
               <a href="${escapeHtml(item.url)}" target="_blank" rel="noreferrer">
                 ${escapeHtml(item.source)} / ${escapeHtml(item.type)} / ${escapeHtml(item.observed_at)}
+                ${item.excerpt ? `<span>${escapeHtml(item.excerpt)}</span>` : ""}
               </a>
             `).join("")}
           </div>
@@ -104,6 +172,8 @@
         </section>
       </div>
     `;
+    const packetButton = detail.querySelector("[data-copy-judge]");
+    packetButton.addEventListener("click", () => copyText(judgePacketText(signal), packetButton));
   }
 
   function labelize(value) {
@@ -137,21 +207,8 @@
   copyButton.addEventListener("click", async () => {
     const signal = data.signals.find((item) => item.id === activeId) || data.signals[0];
     if (!signal) return;
-    const text = `${signal.title}\nConfidence: ${signal.confidence}%\nAction: ${signal.action}`;
-    try {
-      await navigator.clipboard.writeText(text);
-      copyButton.textContent = "Copied";
-      setTimeout(() => {
-        copyButton.textContent = "Copy";
-      }, 1300);
-    } catch (error) {
-      copyButton.textContent = "Blocked";
-      setTimeout(() => {
-        copyButton.textContent = "Copy";
-      }, 1300);
-    }
+    copyText(judgePacketText(signal), copyButton);
   });
 
   render();
 })();
-

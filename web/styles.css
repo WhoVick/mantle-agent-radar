@@ -126,7 +126,8 @@ h1 {
 
 .filter,
 .icon-button,
-.link-button {
+.link-button,
+.small-button {
   min-height: 40px;
   border: 1px solid var(--line);
   background: #181713;
@@ -177,6 +178,13 @@ h1 {
   place-items: center;
   min-width: 82px;
   padding: 0 14px;
+}
+
+.small-button {
+  min-height: 32px;
+  padding: 0 10px;
+  color: var(--green);
+  border-color: rgba(94, 224, 160, 0.42);
 }
 
 .metrics {
@@ -298,6 +306,13 @@ h1 {
   gap: 18px;
 }
 
+.detail-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .type-badge {
   display: inline-flex;
   width: fit-content;
@@ -306,6 +321,61 @@ h1 {
   padding: 5px 8px;
   font-size: 12px;
   text-transform: uppercase;
+}
+
+.judge-packet {
+  border: 1px solid rgba(76, 200, 192, 0.38);
+  background: rgba(76, 200, 192, 0.06);
+  padding: 14px;
+}
+
+.packet-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.packet-grid div {
+  border: 1px solid rgba(58, 52, 43, 0.85);
+  background: rgba(18, 17, 15, 0.52);
+  padding: 11px;
+}
+
+.packet-grid span,
+.proof-strip span {
+  display: block;
+  color: var(--amber);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.packet-grid p {
+  margin-top: 6px;
+  color: #e4d8c9;
+  font-size: 12px;
+  line-height: 1.42;
+}
+
+.proof-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  border: 1px solid rgba(232, 184, 90, 0.5);
+  background: rgba(232, 184, 90, 0.08);
+  padding: 13px 14px;
+}
+
+.proof-strip strong {
+  display: block;
+  margin-top: 4px;
+}
+
+.proof-strip a {
+  color: var(--amber);
+  white-space: nowrap;
 }
 
 .score-bars {
@@ -344,7 +414,16 @@ h1 {
 }
 
 .evidence a {
+  display: block;
   word-break: break-word;
+}
+
+.evidence a span {
+  display: block;
+  margin-top: 5px;
+  color: #ded4c6;
+  font-size: 12px;
+  line-height: 1.4;
 }
 
 .empty-state {
@@ -393,5 +472,16 @@ h1 {
   .bar-row {
     grid-template-columns: 1fr;
   }
-}
 
+  .packet-grid,
+  .detail-meta-row,
+  .proof-strip {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .detail-meta-row,
+  .proof-strip {
+    flex-direction: column;
+  }
+}

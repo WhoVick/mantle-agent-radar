@@ -87,9 +87,11 @@ def build_signal(event: SourceEvent) -> Signal:
                 "type": event.source_type,
                 "url": event.url,
                 "observed_at": event.observed_at,
+                "excerpt": event.text[:220],
             }
         ],
         tags=event.tags,
+        judge_packet=build_judge_packet(signal_type, event, scores, confidence),
     )
 
 
@@ -106,6 +108,35 @@ def recommended_action(signal_type: str, event: SourceEvent) -> str:
     if signal_type == "deadline":
         return "Treat as an execution constraint and update the submission checklist."
     return "Promote to the dashboard if corroborated by a second source or a Mantle-native on-chain trace."
+
+
+def build_judge_packet(signal_type: str, event: SourceEvent, scores: dict[str, int], confidence: int) -> dict[str, str]:
+    strongest = sorted(scores.items(), key=lambda item: item[1], reverse=True)[:2]
+    strongest_text = ", ".join(f"{name.replace('_', ' ')} {value}" for name, value in strongest)
+    source_note = f"{event.source} observed at {event.observed_at}"
+    if signal_type == "deadline":
+        why_now = "This can change submission priority before judging closes."
+        judge_fit = "Shows execution awareness, prize-path mapping, and deadline-driven prioritization."
+    elif signal_type == "alpha":
+        why_now = "This maps judging criteria into product behavior instead of a generic AI summary."
+        judge_fit = "Directly targets Insight value, Data source quality, Investment utility, and Scalability."
+    elif signal_type == "risk":
+        why_now = "Risk signals are useful before they become obvious in public dashboards."
+        judge_fit = "Demonstrates investor utility and a path toward alerting or portfolio monitoring."
+    elif signal_type == "competitor":
+        why_now = "Competitor signals help position the project away from crowded narratives."
+        judge_fit = "Shows market awareness and a practical differentiation loop."
+    else:
+        why_now = "Mantle ecosystem context is moving quickly and can create short-lived opportunities."
+        judge_fit = "Shows Mantle-native relevance with source-backed reasoning."
+
+    return {
+        "why_now": why_now,
+        "judge_fit": judge_fit,
+        "investor_use": f"Confidence {confidence}% from {strongest_text}; source: {source_note}.",
+        "risk": "Single-source signals should be promoted only after corroboration or on-chain verification.",
+        "proof": "Hash-ready for SignalRegistry commitment on Mantle mainnet.",
+    }
 
 
 def rank_signals(events: Iterable[SourceEvent]) -> list[Signal]:

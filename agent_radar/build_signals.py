@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_INPUT = ROOT / "data" / "seed_events.json"
 DEFAULT_OUTPUT = ROOT / "web" / "data" / "signals.json"
 DEFAULT_JS_OUTPUT = ROOT / "web" / "data" / "signals.js"
+DEFAULT_PROOF = ROOT / "proof" / "mainnet.json"
 
 
 def load_events(path: Path) -> list[SourceEvent]:
@@ -22,12 +23,29 @@ def load_events(path: Path) -> list[SourceEvent]:
 
 def build_payload(events: list[SourceEvent]) -> dict:
     signals = rank_signals(events)
+    proof = json.loads(DEFAULT_PROOF.read_text(encoding="utf-8")) if DEFAULT_PROOF.exists() else {}
+    signal_payloads = [asdict(signal) for signal in signals]
+    for signal in signal_payloads:
+        if proof.get("signal_id") == signal["id"]:
+            signal["judge_packet"]["proof"] = (
+                "Committed on Mantle mainnet through SignalRegistry: "
+                f"{proof.get('commit_tx_hash', '')}"
+            )
+            signal["mainnet_proof"] = {
+                "network": proof.get("network", "Mantle Mainnet"),
+                "contract_url": proof.get("contract_url", ""),
+                "commit_tx_url": proof.get("commit_tx_url", ""),
+                "signal_hash": proof.get("signal_hash", ""),
+            }
+        else:
+            signal["mainnet_proof"] = {}
     return {
         "project": "Mantle Agent Radar",
         "track": "AI Alpha & Data",
         "generated_from": len(events),
-        "signals": [asdict(signal) for signal in signals],
+        "signals": signal_payloads,
         "sources": [asdict(event) for event in events],
+        "mainnet_proof": proof,
         "score_weights": {
             "source_quality": 0.25,
             "mantle_relevance": 0.25,

@@ -29,4 +29,4 @@ class Signal:
     source_event_ids: list[str]
     evidence: list[dict[str, str]]
     tags: list[str]
-
+    judge_packet: dict[str, str] = field(default_factory=dict)

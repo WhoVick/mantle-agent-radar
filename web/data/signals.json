@@ -25,7 +25,8 @@
           "source": "Mantle DevHub",
           "type": "devhub",
           "url": "https://devhub.mantle.xyz/",
-          "observed_at": "2026-06-08T08:30:00Z"
+          "observed_at": "2026-06-08T08:30:00Z",
+          "excerpt": "Phase II offers 6 x $8,500 track first prizes, $9,000 Grand Champion, 2 x $8,500 Community Voting, $3,000 UI/UX, and 20 x $1,000 Finalist & Deployment awards. Total value is $223K+ including API credits."
         }
       ],
       "tags": [
@@ -34,7 +35,20 @@
         "community",
         "deployment",
         "jun 15"
-      ]
+      ],
+      "judge_packet": {
+        "why_now": "This can change submission priority before judging closes.",
+        "judge_fit": "Shows execution awareness, prize-path mapping, and deadline-driven prioritization.",
+        "investor_use": "Confidence 75% from source quality 100, mantle relevance 85; source: Mantle DevHub observed at 2026-06-08T08:30:00Z.",
+        "risk": "Single-source signals should be promoted only after corroboration or on-chain verification.",
+        "proof": "Committed on Mantle mainnet through SignalRegistry: 0x505a05c21390d91993d8bce153d927629db4e05e96bca8260ac2a743ea478ad9"
+      },
+      "mainnet_proof": {
+        "network": "Mantle Mainnet",
+        "contract_url": "https://mantlescan.xyz/address/0x5A3C88E1DfE4377448337f3795Ddb7C46A2F3088",
+        "commit_tx_url": "https://mantlescan.xyz/tx/0x505a05c21390d91993d8bce153d927629db4e05e96bca8260ac2a743ea478ad9",
+        "signal_hash": "0xa9f5171c0fe010f1f4a09c375b7690972d8f1c3038c01b363b51a6d3291731fe"
+      }
     },
     {
       "id": "74d727c6a75cf8a8",
@@ -58,7 +72,8 @@
           "source": "Telegram / Byreal Ops",
           "type": "mantlescan",
           "url": "https://mantlescan.xyz/address/0x8004A169FB4a3325136EB29fA0ceB6D2e539a432",
-          "observed_at": "2026-06-02T07:05:00Z"
+          "observed_at": "2026-06-02T07:05:00Z",
+          "excerpt": "Byreal Ops shared Mantle registry address 0x8004A169FB4a3325136EB29fA0ceB6D2e539a432 as the identity registry for agent ID / ERC-8004 related work."
         }
       ],
       "tags": [
@@ -67,7 +82,15 @@
         "erc8004",
         "registry",
         "verifiable"
-      ]
+      ],
+      "judge_packet": {
+        "why_now": "Mantle ecosystem context is moving quickly and can create short-lived opportunities.",
+        "judge_fit": "Shows Mantle-native relevance with source-backed reasoning.",
+        "investor_use": "Confidence 70% from source quality 100, mantle relevance 85; source: Telegram / Byreal Ops observed at 2026-06-02T07:05:00Z.",
+        "risk": "Single-source signals should be promoted only after corroboration or on-chain verification.",
+        "proof": "Hash-ready for SignalRegistry commitment on Mantle mainnet."
+      },
+      "mainnet_proof": {}
     },
     {
       "id": "7cca4a5d0aba9cd2",
@@ -91,7 +114,8 @@
           "source": "Judging Criteria Sheet",
           "type": "criteria",
           "url": "https://docs.google.com/spreadsheets/d/1TMWhQ8cKp_1NF1ZelxtBGIF6l3bQZTA0ipjSREiqRhM/edit?gid=0#gid=0",
-          "observed_at": "2026-06-08T08:35:00Z"
+          "observed_at": "2026-06-08T08:35:00Z",
+          "excerpt": "Mirana judges score Insight value 15, Data source quality 15, Investment utility 12, and Scalability & sustainability 8. Excellent means verifiable alpha or institutional-grade insights with robust data pipelines."
         }
       ],
       "tags": [
@@ -100,7 +124,15 @@
         "investment",
         "mirana",
         "verifiable"
-      ]
+      ],
+      "judge_packet": {
+        "why_now": "This maps judging criteria into product behavior instead of a generic AI summary.",
+        "judge_fit": "Directly targets Insight value, Data source quality, Investment utility, and Scalability.",
+        "investor_use": "Confidence 67% from source quality 90, mantle relevance 85; source: Judging Criteria Sheet observed at 2026-06-08T08:35:00Z.",
+        "risk": "Single-source signals should be promoted only after corroboration or on-chain verification.",
+        "proof": "Hash-ready for SignalRegistry commitment on Mantle mainnet."
+      },
+      "mainnet_proof": {}
     },
     {
       "id": "13639e6be8e23f9a",
@@ -124,7 +156,8 @@
           "source": "Telegram / SuperStella",
           "type": "telegram",
           "url": "https://t.me/MantleTuringTestHackathon",
-          "observed_at": "2026-05-18T11:01:32Z"
+          "observed_at": "2026-05-18T11:01:32Z",
+          "excerpt": "Organizer answer: testnet deployment counts, but mainnet deployment is considered better for final winner selection."
         }
       ],
       "tags": [
@@ -132,7 +165,15 @@
         "deployment",
         "mantle",
         "winner"
-      ]
+      ],
+      "judge_packet": {
+        "why_now": "Mantle ecosystem context is moving quickly and can create short-lived opportunities.",
+        "judge_fit": "Shows Mantle-native relevance with source-backed reasoning.",
+        "investor_use": "Confidence 65% from source quality 70, mantle relevance 70; source: Telegram / SuperStella observed at 2026-05-18T11:01:32Z.",
+        "risk": "Single-source signals should be promoted only after corroboration or on-chain verification.",
+        "proof": "Hash-ready for SignalRegistry commitment on Mantle mainnet."
+      },
+      "mainnet_proof": {}
     },
     {
       "id": "c73e1f4ec6d06ca4",
@@ -156,7 +197,8 @@
           "source": "Telegram / SuperStella",
           "type": "telegram",
           "url": "https://t.me/MantleTuringTestHackathon",
-          "observed_at": "2026-05-20T21:11:00Z"
+          "observed_at": "2026-05-20T21:11:00Z",
+          "excerpt": "Organizer answer: deployment award status was delayed because judging criteria had just been finalized. This makes deployment readiness a useful edge."
         }
       ],
       "tags": [
@@ -164,7 +206,15 @@
         "prize",
         "delayed",
         "criteria"
-      ]
+      ],
+      "judge_packet": {
+        "why_now": "Mantle ecosystem context is moving quickly and can create short-lived opportunities.",
+        "judge_fit": "Shows Mantle-native relevance with source-backed reasoning.",
+        "investor_use": "Confidence 57% from source quality 70, investment utility 57; source: Telegram / SuperStella observed at 2026-05-20T21:11:00Z.",
+        "risk": "Single-source signals should be promoted only after corroboration or on-chain verification.",
+        "proof": "Hash-ready for SignalRegistry commitment on Mantle mainnet."
+      },
+      "mainnet_proof": {}
     },
     {
       "id": "64a9432b568d11da",
@@ -188,7 +238,8 @@
           "source": "Telegram / Poulav",
           "type": "x",
           "url": "https://ledgerforge-self.vercel.app/",
-          "observed_at": "2026-06-06T14:26:00Z"
+          "observed_at": "2026-06-06T14:26:00Z",
+          "excerpt": "LedgerForge lets agents with verified on-chain reputation apply to jobs autonomously and earn when work is completed. Live on Mantle mainnet."
         }
       ],
       "tags": [
@@ -197,7 +248,15 @@
         "reputation",
         "mainnet",
         "marketplace"
-      ]
+      ],
+      "judge_packet": {
+        "why_now": "Mantle ecosystem context is moving quickly and can create short-lived opportunities.",
+        "judge_fit": "Shows Mantle-native relevance with source-backed reasoning.",
+        "investor_use": "Confidence 50% from mantle relevance 60, source quality 55; source: Telegram / Poulav observed at 2026-06-06T14:26:00Z.",
+        "risk": "Single-source signals should be promoted only after corroboration or on-chain verification.",
+        "proof": "Hash-ready for SignalRegistry commitment on Mantle mainnet."
+      },
+      "mainnet_proof": {}
     },
     {
       "id": "1b48999ebb20be0f",
@@ -221,7 +280,8 @@
           "source": "Telegram / Madhav",
           "type": "telegram",
           "url": "https://t.me/MantleTuringTestHackathon",
-          "observed_at": "2026-06-06T14:18:00Z"
+          "observed_at": "2026-06-06T14:18:00Z",
+          "excerpt": "Competitor is building a non-custodial AI agent for tokenized stocks on Mantle, monitoring depeg risk using Pyth vs Fluxion and executing a rescue based on a pre-signed policy."
         }
       ],
       "tags": [
@@ -230,7 +290,15 @@
         "risk",
         "depeg",
         "xstocks"
-      ]
+      ],
+      "judge_packet": {
+        "why_now": "Risk signals are useful before they become obvious in public dashboards.",
+        "judge_fit": "Demonstrates investor utility and a path toward alerting or portfolio monitoring.",
+        "investor_use": "Confidence 47% from investment utility 57, source quality 50; source: Telegram / Madhav observed at 2026-06-06T14:18:00Z.",
+        "risk": "Single-source signals should be promoted only after corroboration or on-chain verification.",
+        "proof": "Hash-ready for SignalRegistry commitment on Mantle mainnet."
+      },
+      "mainnet_proof": {}
     },
     {
       "id": "d2f32e8a264a37f3",
@@ -254,14 +322,23 @@
           "source": "Telegram / SuperStella",
           "type": "telegram",
           "url": "https://t.me/MantleTuringTestHackathon",
-          "observed_at": "2026-05-18T11:05:19Z"
+          "observed_at": "2026-05-18T11:05:19Z",
+          "excerpt": "Organizer answer: projects outside Track 6 have no relation with Byreal RealClaw. Track 6 must use either Byreal Agent Skill or RealClaw."
         }
       ],
       "tags": [
         "scope",
         "track6",
         "realclaw"
-      ]
+      ],
+      "judge_packet": {
+        "why_now": "Competitor signals help position the project away from crowded narratives.",
+        "judge_fit": "Shows market awareness and a practical differentiation loop.",
+        "investor_use": "Confidence 45% from source quality 70, mantle relevance 40; source: Telegram / SuperStella observed at 2026-05-18T11:05:19Z.",
+        "risk": "Single-source signals should be promoted only after corroboration or on-chain verification.",
+        "proof": "Hash-ready for SignalRegistry commitment on Mantle mainnet."
+      },
+      "mainnet_proof": {}
     },
     {
       "id": "61243bd068f2a217",
@@ -285,7 +362,8 @@
           "source": "Telegram / Anish",
           "type": "x",
           "url": "https://x.com/strataagent/status/2056035312326033707?s=20",
-          "observed_at": "2026-05-17T18:46:17Z"
+          "observed_at": "2026-05-17T18:46:17Z",
+          "excerpt": "Strata is a tranched real-world-asset yield protocol on Mantle managed by five autonomous agents with on-chain identity, verifiable decisions, and agent-to-agent communication."
         }
       ],
       "tags": [
@@ -294,7 +372,15 @@
         "yield",
         "agent",
         "identity"
-      ]
+      ],
+      "judge_packet": {
+        "why_now": "Mantle ecosystem context is moving quickly and can create short-lived opportunities.",
+        "judge_fit": "Shows Mantle-native relevance with source-backed reasoning.",
+        "investor_use": "Confidence 45% from source quality 55, mantle relevance 50; source: Telegram / Anish observed at 2026-05-17T18:46:17Z.",
+        "risk": "Single-source signals should be promoted only after corroboration or on-chain verification.",
+        "proof": "Hash-ready for SignalRegistry commitment on Mantle mainnet."
+      },
+      "mainnet_proof": {}
     },
     {
       "id": "990a2bc3d21f84ba",
@@ -318,7 +404,8 @@
           "source": "Telegram / Venkat Sunny",
           "type": "x",
           "url": "https://x.com/i/status/2063316350098166118",
-          "observed_at": "2026-06-06T20:46:00Z"
+          "observed_at": "2026-06-06T20:46:00Z",
+          "excerpt": "Tenki is an autonomous AI quant agent that turns natural-language strategies into backtests and anchors every result on-chain."
         }
       ],
       "tags": [
@@ -326,7 +413,15 @@
         "trading",
         "backtesting",
         "verifiable"
-      ]
+      ],
+      "judge_packet": {
+        "why_now": "Competitor signals help position the project away from crowded narratives.",
+        "judge_fit": "Shows market awareness and a practical differentiation loop.",
+        "investor_use": "Confidence 43% from source quality 55, novelty 46; source: Telegram / Venkat Sunny observed at 2026-06-06T20:46:00Z.",
+        "risk": "Single-source signals should be promoted only after corroboration or on-chain verification.",
+        "proof": "Hash-ready for SignalRegistry commitment on Mantle mainnet."
+      },
+      "mainnet_proof": {}
     }
   ],
   "sources": [
@@ -496,6 +591,20 @@
       "metadata": {}
     }
   ],
+  "mainnet_proof": {
+    "network": "Mantle Mainnet",
+    "chain_id": 5000,
+    "contract_name": "SignalRegistry",
+    "contract_address": "0x5A3C88E1DfE4377448337f3795Ddb7C46A2F3088",
+    "contract_url": "https://mantlescan.xyz/address/0x5A3C88E1DfE4377448337f3795Ddb7C46A2F3088",
+    "commit_tx_hash": "0x505a05c21390d91993d8bce153d927629db4e05e96bca8260ac2a743ea478ad9",
+    "commit_tx_url": "https://mantlescan.xyz/tx/0x505a05c21390d91993d8bce153d927629db4e05e96bca8260ac2a743ea478ad9",
+    "signal_id": "324e50984ca62f45",
+    "signal_type": "deadline",
+    "confidence": 75,
+    "signal_hash": "0xa9f5171c0fe010f1f4a09c375b7690972d8f1c3038c01b363b51a6d3291731fe",
+    "agent_id": "0xa01ff137ec71f15114acd88a208f392ecb6f6ffb728043d75d3ecf51ad8c1d8f"
+  },
   "score_weights": {
     "source_quality": 0.25,
     "mantle_relevance": 0.25,
