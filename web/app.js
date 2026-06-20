@@ -9,6 +9,128 @@
   const metricConfidence = document.getElementById("metricConfidence");
   const metricSources = document.getElementById("metricSources");
   const copyButton = document.getElementById("copyTopSignal");
+  const refreshButton = document.getElementById("refreshLiveSignals");
+  const liveBlockLink = document.getElementById("liveBlockLink");
+  const liveSourceStatus = document.getElementById("liveSourceStatus");
+  const liveSignalId = "live-mantle-mainnet-block";
+  const liveSourceId = "mantle-mainnet-rpc-live";
+  const mantleRpcUrl = "https://rpc.mantle.xyz";
+
+  async function rpcCall(method, params) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+    try {
+      const response = await fetch(mantleRpcUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }),
+        signal: controller.signal,
+      });
+      if (!response.ok) throw new Error(`RPC HTTP ${response.status}`);
+      const payload = await response.json();
+      if (payload.error) throw new Error(payload.error.message || "RPC error");
+      return payload.result;
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
+
+  function hexNumber(value) {
+    return Number(BigInt(value || "0x0"));
+  }
+
+  function replaceLiveRecord(collection, id, record) {
+    const index = collection.findIndex((item) => item.id === id);
+    if (index === -1) collection.unshift(record);
+    else collection[index] = record;
+  }
+
+  async function refreshLiveSignal(selectSignal) {
+    refreshButton.disabled = true;
+    refreshButton.textContent = "Refreshing";
+    liveSourceStatus.textContent = "Reading Mantle mainnet...";
+
+    try {
+      const blockHex = await rpcCall("eth_blockNumber", []);
+      const block = await rpcCall("eth_getBlockByNumber", [blockHex, false]);
+      if (!block) throw new Error("Latest block was not returned");
+
+      const blockNumber = hexNumber(block.number);
+      const timestamp = new Date(hexNumber(block.timestamp) * 1000);
+      const transactionCount = Array.isArray(block.transactions) ? block.transactions.length : 0;
+      const gasUsed = hexNumber(block.gasUsed);
+      const gasLimit = Math.max(hexNumber(block.gasLimit), 1);
+      const gasUtilization = Math.round((gasUsed / gasLimit) * 100);
+      const ageSeconds = Math.max(0, Math.round((Date.now() - timestamp.getTime()) / 1000));
+      const blockUrl = `https://mantlescan.xyz/block/${blockNumber}`;
+      const observedAt = timestamp.toISOString();
+
+      const source = {
+        id: liveSourceId,
+        source: "Mantle mainnet public RPC",
+        source_type: "mantle_rpc",
+        title: `Mantle block ${blockNumber}`,
+        text: `${transactionCount} transactions, ${gasUtilization}% gas utilization, observed ${ageSeconds}s ago.`,
+        url: blockUrl,
+        observed_at: observedAt,
+        tags: ["mantle", "mainnet", "live", "onchain"],
+      };
+      const signal = {
+        id: liveSignalId,
+        signal_type: "ecosystem",
+        title: `Mantle mainnet block #${blockNumber} ingested live`,
+        summary: `The agent fetched the latest Mantle block directly from the public RPC: ${transactionCount} transactions and ${gasUtilization}% gas utilization. The source is ${ageSeconds} seconds old.`,
+        action: "Use this live chain checkpoint as current context and correlate it with ecosystem or social signals before promotion.",
+        confidence: ageSeconds < 120 ? 88 : 72,
+        scores: {
+          source_quality: 100,
+          mantle_relevance: 100,
+          urgency: ageSeconds < 120 ? 90 : 65,
+          novelty: 72,
+          investment_utility: 62,
+          evidence_strength: 100,
+        },
+        source_event_ids: [liveSourceId],
+        evidence: [{
+          source: source.source,
+          type: source.source_type,
+          url: blockUrl,
+          observed_at: observedAt,
+          excerpt: source.text,
+        }],
+        tags: source.tags,
+        judge_packet: {
+          why_now: `Block ${blockNumber} proves the dashboard is reading current Mantle mainnet data rather than only a prepared dataset.`,
+          judge_fit: "Demonstrates a working Mantle-native data pipeline, verifiable evidence, and live refresh behavior.",
+          investor_use: "Provides a fresh on-chain checkpoint that can be correlated with social, launch, risk, and smart-money signals.",
+          risk: "A single block is telemetry, not alpha by itself. Promote only after correlation with another source.",
+          proof: blockUrl,
+        },
+      };
+
+      replaceLiveRecord(data.sources, liveSourceId, source);
+      replaceLiveRecord(data.signals, liveSignalId, signal);
+      if (selectSignal) {
+        activeFilter = "all";
+        activeId = liveSignalId;
+        document.querySelectorAll(".filter").forEach((item) => {
+          item.classList.toggle("active", item.dataset.filter === "all");
+        });
+      }
+
+      liveBlockLink.href = blockUrl;
+      liveBlockLink.textContent = `#${blockNumber}`;
+      liveSourceStatus.textContent = `${transactionCount} tx / updated ${ageSeconds}s ago`;
+      render();
+    } catch (error) {
+      liveBlockLink.removeAttribute("href");
+      liveBlockLink.textContent = "Unavailable";
+      liveSourceStatus.textContent = "RPC unavailable / static evidence preserved";
+    } finally {
+      refreshButton.disabled = false;
+      refreshButton.textContent = "Refresh live";
+    }
+  }
 
   function filteredSignals() {
     if (activeFilter === "all") return data.signals;
@@ -210,5 +332,8 @@
     copyText(judgePacketText(signal), copyButton);
   });
 
+  refreshButton.addEventListener("click", () => refreshLiveSignal(true));
+
   render();
+  refreshLiveSignal(false);
 })();

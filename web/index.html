@@ -40,6 +40,7 @@
             <h2>Investor-grade Mantle signals</h2>
           </div>
           <div class="top-actions">
+            <button id="refreshLiveSignals" class="icon-button" title="Fetch the latest Mantle mainnet block">Refresh live</button>
             <button id="copyTopSignal" class="icon-button" title="Copy top signal summary">Copy</button>
             <a class="link-button" href="demo-captions.html">Caption Demo</a>
             <a class="link-button" href="demo-walkthrough.html">Demo Mode</a>
@@ -64,6 +65,11 @@
           <div class="metric accent">
             <span>On-chain proof</span>
             <strong><a href="https://mantlescan.xyz/address/0x5A3C88E1DfE4377448337f3795Ddb7C46A2F3088" target="_blank" rel="noreferrer">Live</a></strong>
+          </div>
+          <div class="metric live-metric">
+            <span>Live Mantle block</span>
+            <strong><a id="liveBlockLink" target="_blank" rel="noreferrer">Connecting</a></strong>
+            <small id="liveSourceStatus">Public RPC / no API key</small>
           </div>
         </section>
 

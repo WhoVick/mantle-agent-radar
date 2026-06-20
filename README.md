@@ -14,6 +14,7 @@ It ingests structured events from Mantle-native sources such as DevHub updates, 
 
 The dashboard shows:
 
+- Live Mantle mainnet block ingestion through the public JSON-RPC endpoint, with a refresh control and Mantlescan evidence.
 - Ranked alpha, risk, deadline, competitor, deployment, and ecosystem signals.
 - Evidence trails for every signal.
 - Confidence scores and recommended action.
@@ -58,6 +59,8 @@ Local preview:
 ```powershell
 npm run preview
 ```
+
+Open the dashboard and select `Refresh live`. The app reads the latest Mantle mainnet block without an API key, creates a scored live signal, and links the evidence to Mantlescan. If the public RPC is unavailable, the submitted static evidence remains visible.
 
 ## Telegram Monitoring
 
